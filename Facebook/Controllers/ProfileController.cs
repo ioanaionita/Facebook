@@ -21,6 +21,14 @@ namespace Facebook.Controllers
             //profile.UserId = User.Identity.GetUserId();
             return View();
         }
+        public ActionResult Show(int id)
+        {
+            Profile profile = db.Profiles.Find(id);
+            ViewBag.Profile = profile;
+            ViewBag.DateOfBirth = profile.DateOfBirth.Date.ToString("dd.MM.yyyy");
+            return View();
+        }
+
 
         public ActionResult New()
         {
