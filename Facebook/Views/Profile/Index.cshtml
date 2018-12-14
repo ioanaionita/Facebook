@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "People you may know";
+}
+
+<h2>@ViewBag.Title</h2>
+@if (TempData.ContainsKey("message"))
+{
+    <h3 class="alert alert-info" role="alert">@ViewBag.message</h3>
+}
+@foreach (FacebookDAW.Models.Profile profile in ViewBag.Profiles)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>@profile.FirstName @profile.LastName</strong> </div>
+        <div class="panel-body">
+            From: @profile.City, @profile.Country
+            <br>
+            <a class="btn btn-sm btn-success" href="/Profile/Show/@profile.Id">Show profile</a>
+        </div>
+    </div>
+}
+
+

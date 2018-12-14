@@ -1,0 +1,51 @@
+﻿@model FacebookDAW.Models.Profile
+@{
+    ViewBag.Title = "New Profile";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form method="post" action="/Profile/New">
+    @Html.HiddenFor(m => m.UserId)
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @Html.Label("FirstName", "First name")
+    <br />
+    @Html.TextBox("FirstName", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.FirstName, null, new { @class = "text-danger " })
+    <br /><br />
+    @Html.Label("LastName", "Last name")
+    <br />
+    @Html.TextBox("LastName", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.FirstName, null, new { @class = "text-danger " })
+    <br /><br />
+    @Html.Label("DateOfBirth", "Birth date")
+    <br />
+    <input class="date-picker" />
+    @Html.TextBox("DateOfBirth", "", new { @class = "date-picker hidden" })
+    <br /><br />
+    @Html.Label("City", "City")
+    <br />
+    @Html.TextBox("City", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.City, null, new { @class = "text-danger " })
+    <br /><br />
+    @Html.Label("Country", "Country")
+    <br />
+    @Html.TextBox("Country", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.Country, null, new { @class = "text-danger " })
+    <br /><br />
+    @Html.Label("ProfileVisibility", "Profile Visibility")
+    <br />
+    @Html.RadioButton("ProfileVisibility", false)@Html.Label("Public")
+    <br />
+    @Html.RadioButton("ProfileVisibility", true)@Html.Label("Private")
+
+    <button class="btn btn-sm btn-success" type="submit">Adauga profil</button>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        // This will make every element with the class "date-picker" into a DatePicker element
+        $('.date-picker').datepicker();
+    })
+</script>

@@ -19,6 +19,13 @@ namespace Facebook.Controllers
             //profile.Groups = GetAllGroups(profile);
             //profile.Friends = GetAllFriends(profile);
             //profile.UserId = User.Identity.GetUserId();
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.message = TempData["message"].ToString();
+            }
+            var profiles = db.Profiles;
+            ViewBag.Profiles = profiles;
+
             return View();
         }
         public ActionResult Show(int id)
@@ -45,11 +52,12 @@ namespace Facebook.Controllers
             // Extragem toate grupurile din baza de date
             var groups = from g in db.Groups select g;
             // iteram prin grupuri
-            
+
             foreach (var g in groups)
             {
                 //Caut grupurile care contin profilul cautat in lista lor de profile
-                if (g.Profiles.Contains(profile)){
+                if (g.Profiles.Contains(profile))
+                {
                     selectList.Add(g);
                 }
             }
@@ -74,6 +82,31 @@ namespace Facebook.Controllers
             }
             // returnam lista de prieteni
             return selectList;
+        }
+
+        //verificare ca un user sa nu-si creeze mai multe profiluri !!!
+        [HttpPost]
+        [Authorize(Roles = "Editor,Administrator")]
+        public ActionResult New(Profile profile)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Profiles.Add(profile);
+                    db.SaveChanges();
+                    TempData["message"] = "Profilul a fost adaugat!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View(profile);
+                }
+            }
+            catch (Exception e)
+            {
+                return View(profile);
+            }
         }
     }
 }
