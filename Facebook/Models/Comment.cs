@@ -11,7 +11,7 @@ namespace FacebookDAW.Models
         [Key]
         public int Id { get; set; }
         public string Content { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public DateTime DateCreated { get; set; }
         public virtual Profile Profile { get; set; }
     }
