@@ -33,6 +33,16 @@ namespace Facebook.Controllers
             Profile profile = db.Profiles.Find(id);
             ViewBag.Profile = profile;
             ViewBag.DateOfBirth = profile.DateOfBirth.Date.ToString("dd.MM.yyyy");
+            ViewBag.allowEdit = false;
+            ViewBag.currentUser = User.Identity.GetUserId();
+            if(profile.UserId == User.Identity.GetUserId() && (User.IsInRole("Administrator") || User.IsInRole("Editor")))
+            {
+                ViewBag.allowEdit = true;
+            }
+            if (User.IsInRole("Administrator"))
+            {
+                ViewBag.allowEdit = true;
+            }
             return View();
         }
 
@@ -86,17 +96,18 @@ namespace Facebook.Controllers
 
         //verificare ca un user sa nu-si creeze mai multe profiluri !!!
         [HttpPost]
-        [Authorize(Roles = "Editor,Administrator")]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New(Profile profile)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    
                     db.Profiles.Add(profile);
                     db.SaveChanges();
                     TempData["message"] = "Profilul a fost adaugat!";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Login", "Account");
                 }
                 else
                 {
@@ -107,6 +118,47 @@ namespace Facebook.Controllers
             {
                 return View(profile);
             }
+        }
+        [Authorize(Roles = "Editor,Administrator")]
+        public ActionResult Edit(int id)
+        {
+            Profile profile = db.Profiles.Find(id);
+            if(profile.UserId != User.Identity.GetUserId())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            ViewBag.Profile = profile;
+            return View();
+        }
+
+        [HttpPut]
+        public ActionResult Edit(int id, Profile requestProfile)
+        {
+            try
+            {
+                Profile profile = db.Profiles.Find(id);
+                if (TryUpdateModel(profile))
+                {
+                    profile.FirstName = requestProfile.FirstName;
+                    profile.LastName = requestProfile.LastName;
+                    profile.DateOfBirth = requestProfile.DateOfBirth;
+                    profile.City = requestProfile.City;
+                    profile.Country = requestProfile.Country;
+                    profile.ProfileVisibility = requestProfile.ProfileVisibility;
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                return View();
+            }
+        }
+        [HttpPost]
+        public ActionResult AddFriend(Profile profile)
+        {
+
+            return View();
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿@model FacebookDAW.Models.Profile
+
 @{
-    ViewBag.Title = "New Profile";
+    ViewBag.Titlu = "Edit profile";
 }
 
-<h2>@ViewBag.Title</h2>
-
-<form method="post" action="/Profile/New">
+<h2>@ViewBag.Titlu</h2>
+<form method="post" action="/Profile/Edit">
     @Html.HiddenFor(m => m.UserId)
 
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
@@ -21,9 +21,8 @@
     <br /><br />
     @Html.Label("DateOfBirth", "Birth date")
     <br />
-    <!--<input class="datepicker" />-->
-    @Html.TextBox("DateOfBirth", "", new { @class = "datepicker" })
-    <!--@@Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @@Value = DateTime.Now, @@class = "form-control datepicker" } })-->
+    <input class="date-picker" />
+    @Html.TextBox("DateOfBirth", "", new { @class = "date-picker hidden" })
     <br /><br />
     @Html.Label("City", "City")
     <br />
@@ -41,19 +40,5 @@
     <br />
     @Html.RadioButton("ProfileVisibility", true)@Html.Label("Private")
 
-    <button class="btn btn-sm btn-success" type="submit">Adauga profil</button>
+    <button class="btn btn-sm btn-success" type="submit">Update profile</button>
 </form>
-<p></p>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("p").text("Helloooo");
-        // This will make every element with the class "date-picker" into a DatePicker element
-        $('.datepicker').datepicker({
-            format: 'dd-mm-yyyy'
-        });
-        
-    })
-</script>
-<link rel="stylesheet" href="~/Scripts/jquery-3.3.1.js" />
-<link rel="stylesheet" href="~/Scripts/bootstrap.js"/>

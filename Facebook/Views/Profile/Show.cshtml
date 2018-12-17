@@ -2,11 +2,18 @@
 @{
     ViewBag.Title = "My profile";
 }
-
-<h2>@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h2> 
-<p>Date of birth: @ViewBag.DateOfBirth</p>
-<p>From @ViewBag.Profile.City, @ViewBag.Profile.Country</p>
-
-<a href="">Update profile</a>
-<hr />
+@if (ViewBag.Profile.UserId != ViewBag.currentUser)
+{
+    <form method="post" action="/Profile/AddFriend">
+        <button type="submit" class="btn btn-sm btn-success">Add friend</button>
+    </form>
+    }
+    <h2>@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h2>
+    <p>Date of birth: @ViewBag.DateOfBirth</p>
+    <p>From @ViewBag.Profile.City, @ViewBag.Profile.Country</p>
+    @if (ViewBag.allowEdit)
+    {
+        <a href="/Profile/Edit"> Update profile </a>
+    }
+    <hr />
 
