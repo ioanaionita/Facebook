@@ -21,9 +21,7 @@
     <br /><br />
     @Html.Label("DateOfBirth", "Birth date")
     <br />
-    <!--<input class="datepicker" />-->
-    @Html.TextBox("DateOfBirth", "", new { @class = "datepicker" })
-    <!--@@Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @@Value = DateTime.Now, @@class = "form-control datepicker" } })-->
+    @Html.TextBoxFor(model=>model.DateOfBirth, new { @class="form-control", @id="date"})
     <br /><br />
     @Html.Label("City", "City")
     <br />
@@ -46,14 +44,7 @@
 <p></p>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("p").text("Helloooo");
-        // This will make every element with the class "date-picker" into a DatePicker element
-        $('.datepicker').datepicker({
-            format: 'dd-mm-yyyy'
-        });
-        
-    })
+    document.getElementById("date").value = "";
 </script>
 <link rel="stylesheet" href="~/Scripts/jquery-3.3.1.js" />
 <link rel="stylesheet" href="~/Scripts/bootstrap.js"/>
