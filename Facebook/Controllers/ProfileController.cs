@@ -35,6 +35,7 @@ namespace Facebook.Controllers
             ViewBag.DateOfBirth = profile.DateOfBirth.Date.ToString("dd.MM.yyyy");
             ViewBag.allowEdit = false;
             ViewBag.currentUser = User.Identity.GetUserId();
+            ViewBag.currentProfile = profile.Id;
             if(profile.UserId == User.Identity.GetUserId() && (User.IsInRole("Administrator") || User.IsInRole("Editor")))
             {
                 ViewBag.allowEdit = true;
@@ -43,7 +44,7 @@ namespace Facebook.Controllers
             {
                 ViewBag.allowEdit = true;
             }
-            return View();
+            return View(profile);
         }
 
 
@@ -103,11 +104,10 @@ namespace Facebook.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    
                     db.Profiles.Add(profile);
                     db.SaveChanges();
                     TempData["message"] = "Profilul a fost adaugat!";
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("Index", "Profile");
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace Facebook.Controllers
                 return RedirectToAction("Login", "Account");
             }
             ViewBag.Profile = profile;
-            return View();
+            return View(profile);
         }
 
         [HttpPut]
@@ -158,6 +158,16 @@ namespace Facebook.Controllers
         public ActionResult AddFriend(Profile profile)
         {
 
+            return View();
+        }
+
+        public ActionResult FriendsAndGroups(int id)
+        {
+            //int id = int.Parse(profileId);
+            Profile profile = db.Profiles.Find(id);
+            ViewBag.profile = profile;
+            ViewBag.friends = profile.Friends;
+            ViewBag.groups = profile.Groups;
             return View();
         }
     }

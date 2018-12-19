@@ -1,19 +1,22 @@
-﻿
+﻿@model FacebookDAW.Models.Profile
 @{
     ViewBag.Title = "My profile";
+    int profileId = (int)ViewBag.Profile.Id;
 }
-@if (ViewBag.Profile.UserId != ViewBag.currentUser)
+@if (@Model.UserId != ViewBag.currentUser)
 {
     <form method="post" action="/Profile/AddFriend">
         <button type="submit" class="btn btn-sm btn-success">Add friend</button>
     </form>
     }
-    <h2>@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h2>
-    <p>Date of birth: @ViewBag.DateOfBirth</p>
-    <p>From @ViewBag.Profile.City, @ViewBag.Profile.Country</p>
+    <h2>@Model.FirstName @Model.LastName</h2>
+    <p>Date of birth: @Model.DateOfBirth</p>
+    <p>From @Model.City, @Model.Country</p>
     @if (ViewBag.allowEdit)
     {
-        <a href="/Profile/Edit"> Update profile </a>
+        <a href="/Profile/Edit/@Model.Id"> Update profile </a>
     }
+
+    <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
     <hr />
 
