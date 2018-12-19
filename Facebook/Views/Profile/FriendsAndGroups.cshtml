@@ -4,7 +4,7 @@
 }
 
 <h2>@ViewBag.profile.LastName @ViewBag.profile.FirstName's friends:</h2>
-@if (ViewBag.friends != null)
+@if (ViewBag.numberOfFriends != 0 )
 {
     <ul>
         @foreach (FacebookDAW.Models.Profile friend in ViewBag.friends)
@@ -17,8 +17,9 @@ else
 {
     <p> No friends yet.</p>
 }
+<hr />
 <h2>@ViewBag.profile.LastName @ViewBag.profile.FirstName's groups:</h2>
-@if (ViewBag.groups != null)
+@if (ViewBag.numberOfGroups != 0 )
 {
     <ul>
         @foreach (FacebookDAW.Models.Group group in ViewBag.groups)

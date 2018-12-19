@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Facebook.Models;
+using FacebookDAW.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Facebook.Controllers
 {
@@ -17,6 +19,8 @@ namespace Facebook.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        private ApplicationDbContext db = ApplicationDbContext.Create();
 
         public AccountController()
         {
@@ -72,14 +76,33 @@ namespace Facebook.Controllers
             {
                 return View(model);
             }
-
+            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            string userId = manager.FindByEmail(model.Email).Id;
+            ViewBag.userId = userId;
+            int ok = 0;
+            foreach (var p in db.Profiles.ToList())
+            {
+                if(p.UserId == userId)
+                {
+                    ok = 1;
+                    break;
+                }
+            }
+          
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    if (ok == 0)
+                    {
+                        return RedirectToAction("New", "Profile");
+                    }
+                    else
+                    {
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -164,7 +187,7 @@ namespace Facebook.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("New", "Profile");
+                    return RedirectToAction("Login", "Account");
                 }
                 AddErrors(result);
             }

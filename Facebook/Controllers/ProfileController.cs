@@ -119,7 +119,7 @@ namespace Facebook.Controllers
                 return View(profile);
             }
         }
-        [Authorize(Roles = "Editor,Administrator")]
+        [Authorize(Roles = "User, Editor,Administrator")]
         public ActionResult Edit(int id)
         {
             Profile profile = db.Profiles.Find(id);
@@ -166,7 +166,9 @@ namespace Facebook.Controllers
             //int id = int.Parse(profileId);
             Profile profile = db.Profiles.Find(id);
             ViewBag.profile = profile;
+            ViewBag.numberOfFriends = profile.Friends.Count();
             ViewBag.friends = profile.Friends;
+            ViewBag.numberOfGroups = profile.Groups.Count();
             ViewBag.groups = profile.Groups;
             return View();
         }

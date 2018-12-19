@@ -5,7 +5,7 @@
 }
 
 <h2>@ViewBag.Titlu</h2>
-<form method="post" action="/Profile/Edit">
+<form method="post" action="/Profile/Edit/@Model.Id">
     @Html.HiddenFor(m => m.UserId)
 
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
@@ -21,8 +21,7 @@
     <br /><br />
     @Html.Label("DateOfBirth", "Birth date")
     <br />
-    <input class="date-picker" />
-    @Html.TextBox("DateOfBirth", "", new { @class = "date-picker hidden" })
+    @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control", @id = "date" })
     <br /><br />
     @Html.Label("City", "City")
     <br />

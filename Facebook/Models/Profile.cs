@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Facebook.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,10 +22,12 @@ namespace FacebookDAW.Models
         public string Country { get; set; }
         public Boolean ProfileVisibility { get; set; }
         public string UserId { get; set; }
-
+        public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Profile> Friends { get; set; }
+        //se retine profilul persoanei careia i-am trimis cerere de prietenie
+        public virtual ICollection<Profile> SentFriendRequests { get; set; }
         public virtual ICollection<Chat> Chats { get; set; }
     }
 }

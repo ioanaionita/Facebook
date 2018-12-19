@@ -10,8 +10,8 @@ namespace FacebookDAW.Models
     {
         [Key]
         public int Id { get; set; }
-        public string UserId { get; set; }
 
+        public string UserId { get; set; }
         public virtual Profile Profile { get; set; }
         public ICollection<Photo> Photos { get; set; }
     }
