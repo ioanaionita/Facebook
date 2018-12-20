@@ -46,6 +46,10 @@ namespace Facebook.Controllers
             {
                 ViewBag.allowEdit = true;
             }
+            if (TempData.ContainsKey("update"))
+            {
+                ViewBag.update = TempData["update"].ToString();
+            }
             return View(profile);
         }
 
@@ -157,20 +161,30 @@ namespace Facebook.Controllers
         {
             try
             {
-                Profile profile = db.Profiles.Find(id);
-                if (TryUpdateModel(profile))
+                if (ModelState.IsValid)
                 {
-                    profile.FirstName = requestProfile.FirstName;
-                    profile.LastName = requestProfile.LastName;
-                    profile.DateOfBirth = requestProfile.DateOfBirth;
-                    profile.City = requestProfile.City;
-                    profile.Country = requestProfile.Country;
-                    profile.ProfileVisibility = requestProfile.ProfileVisibility;
-                    db.SaveChanges();
+                    Profile profile = db.Profiles.Find(id);
+                    if (TryUpdateModel(profile))
+                    {
+                        profile.FirstName = requestProfile.FirstName;
+                        profile.LastName = requestProfile.LastName;
+                        profile.DateOfBirth = requestProfile.DateOfBirth;
+                        profile.City = requestProfile.City;
+                        profile.Country = requestProfile.Country;
+                        profile.ProfileVisibility = requestProfile.ProfileVisibility;
+                        db.SaveChanges();
+                        TempData["update"] = "Profilul a fost modificat!";
+                        
+                    }
+                    return RedirectToAction("Show", new { id = profile.Id });
                 }
-                return RedirectToAction("Index");
+                else
+                {
+                    return View();
+                }
+
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return View();
             }

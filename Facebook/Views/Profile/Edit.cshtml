@@ -6,6 +6,7 @@
 
 <h2>@ViewBag.Titlu</h2>
 <form method="post" action="/Profile/Edit/@Model.Id">
+    @Html.HttpMethodOverride(HttpVerbs.Put)
     @Html.HiddenFor(m => m.UserId)
 
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
