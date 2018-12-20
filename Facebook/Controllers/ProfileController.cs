@@ -23,7 +23,9 @@ namespace Facebook.Controllers
             {
                 ViewBag.message = TempData["message"].ToString();
             }
-            var profiles = db.Profiles;
+            //transmitem catre Index view toate profilurile, in afara de cel al utilizatorului curent (People you may know);
+            var currentUserId = User.Identity.GetUserId();
+            var profiles = db.Profiles.Where(p => p.UserId!=currentUserId);
             ViewBag.Profiles = profiles;
 
             return View();
@@ -95,6 +97,25 @@ namespace Facebook.Controllers
             return selectList;
         }
 
+        [Authorize(Roles = "User, Editor, Administrator")]
+        public ActionResult MyProfile(string userId)
+        {
+            int ok = 0; //spune daca am gasit profilul ce apartine Userului cu id-ul userId
+            Profile myProfile = new Profile();
+            foreach (var profile in db.Profiles)
+            {
+                if (profile.UserId == userId)
+                {
+                    ok = 1;
+                    myProfile = profile;
+                }
+            }
+            if (ok == 1)
+                return RedirectToAction("Show", new { id = myProfile.Id });
+            else
+             return RedirectToAction("New");
+        }
+
         //verificare ca un user sa nu-si creeze mai multe profiluri !!!
         [HttpPost]
         [Authorize(Roles = "User,Editor,Administrator")]
@@ -155,10 +176,9 @@ namespace Facebook.Controllers
             }
         }
         [HttpPost]
-        public ActionResult AddFriend(Profile profile)
+        public void AddFriend(Profile profile)
         {
-
-            return View();
+            
         }
 
         public ActionResult FriendsAndGroups(int id)

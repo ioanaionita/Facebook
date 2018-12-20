@@ -18,6 +18,6 @@ namespace Facebook.Models
         public virtual ICollection<Profile> FriendRequests { get; set; }
 
         //id poza si id user care a dat like
-        public virtual ICollection<Tuple<Profile, Profile>> Likes { get; set; }
+        public virtual ICollection<Tuple<Photo, Profile>> Likes { get; set; }
     }
 }

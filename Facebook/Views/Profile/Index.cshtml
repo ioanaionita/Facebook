@@ -16,8 +16,14 @@
             From: @profile.City, @profile.Country
             <br>
             <a class="btn btn-sm btn-success" href="/Profile/Show/@profile.Id">Show profile</a>
+            <a class="btn btn-sm btn-success" href="/Profile/AddFriend/@profile.Id" onclick="addFriend()" id ="addFriend">Add friend</a>
         </div>
     </div>
 }
 
+<script type="text/javascript">
+    function addFriend() {
+        document.getElementById("addFriend").innerHTML = "Friend Request Sent";
+    }
+</script>
 

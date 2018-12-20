@@ -10,6 +10,9 @@
             @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
         </li>
         <li class="nav-item"><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        <li class="nav-item">
+            @Html.ActionLink("MyProfile", "MyProfile", "Profile", new { userId = User.Identity.GetUserId() }, htmlAttributes: new { @id = "myProfileLink", @class = "nav-link" })
+        </li>
     </ul>
     }
 }
