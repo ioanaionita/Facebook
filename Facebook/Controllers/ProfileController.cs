@@ -11,6 +11,7 @@ namespace Facebook.Controllers
 {
     public class ProfileController : Controller
     {
+        public static int friendRequests = 0;
         private ApplicationDbContext db = ApplicationDbContext.Create();
         // GET: Profile
         public ActionResult Index()
@@ -38,7 +39,7 @@ namespace Facebook.Controllers
             ViewBag.allowEdit = false;
             ViewBag.currentUser = User.Identity.GetUserId();
             ViewBag.currentProfile = profile.Id;
-            if(profile.UserId == User.Identity.GetUserId() && (User.IsInRole("Administrator") || User.IsInRole("Editor")))
+            if (profile.UserId == User.Identity.GetUserId() && (User.IsInRole("Administrator") || User.IsInRole("Editor")))
             {
                 ViewBag.allowEdit = true;
             }
@@ -50,6 +51,42 @@ namespace Facebook.Controllers
             {
                 ViewBag.update = TempData["update"].ToString();
             }
+            //iau userul curent
+            string idUser = User.Identity.GetUserId();
+            Profile profilUser = db.Profiles.SingleOrDefault(p => p.UserId == idUser);
+
+            //verific daca userul curent e prieten cu profilul pe care a intrat
+            //Daca sunt prieteni, voi afisa "Friends" in loc de butonul de cerere de prietenie        
+            if (profilUser.Friends.Contains(profile) && profile.Friends.Contains(profilUser))
+            {
+                ViewBag.alreadyFriends = true;
+            }
+            else
+            {
+                ViewBag.alreadyFriends = false;
+            }
+
+            //Daca userul curent a mai trimis o cerere de prietenie catre profilul pe care se afla,
+            //atunci va aparea "Friend request sent" si nu va mai putea trimite o alta cerere.
+            if (profilUser.SentFriendRequests.Contains(profile))
+            {
+                ViewBag.friendRequestSent = true;
+            }
+            else
+            {
+                ViewBag.friendRequestSent = false;
+            }
+            //Daca userul curent a primit el cerere de la profil (profilul i-a trimis lui o cerere),
+            //atunci userului curent ii va aparea sa accepte cererea primita, "Accept friend request"
+            if (profile.SentFriendRequests.Contains(profilUser))
+            {
+                ViewBag.acceptFriendRequest = true;
+            }
+            else
+            {
+                ViewBag.acceptFriendRequest = false;
+            }
+      
             return View(profile);
         }
 
@@ -189,12 +226,75 @@ namespace Facebook.Controllers
                 return View();
             }
         }
-        [HttpPost]
-        public void AddFriend(Profile profile)
+        //[HttpPost]
+        public ActionResult AddFriend(int id)
         {
             
-        }
+            Profile profil = db.Profiles.Find(id);
+            string idUser = User.Identity.GetUserId();
+            Profile profilSender = db.Profiles.SingleOrDefault(p => p.UserId == idUser);
+                if(profilSender != null)
+                    {
+                //caut in tabelul de notificari notificarile care corespund profilului curent
+                Notification notification = db.Notifications.SingleOrDefault(n => n.ReceiverId == profil.Id);
+                //daca profilul curent nu are inca o lista de notificari asociata
+                if (notification == null)
+                    {
+                    notification = new Notification();
+                    notification.ReceiverId = profil.Id;
+                    notification.FriendRequests = new List<Profile>();
+                    db.Notifications.Add(notification);
+                    db.SaveChanges();
 
+                    }
+                //profilul curent a primit o cerere de la profilul care i-a trimis
+                //notificarea apartine profilului pe care sunt, el primeste cererea de prietenie
+                notification.FriendRequests.Add(profilSender);
+                //ii notez si utilizatorului care a trimis cererea
+                profilSender.SentFriendRequests.Add(profil);
+                if (profil.Friends.Contains(profilSender))
+                {
+                    profil.Friends.Remove(profilSender);
+                }
+                if (profilSender.Friends.Contains(profil))
+                {
+                    profilSender.Friends.Remove(profil);
+                }
+                db.SaveChanges();
+                }
+
+            return RedirectToAction("Show", new { id = profil.Id });
+        }
+        public ActionResult AcceptFriendRequest(int id)
+        {
+            Profile profil = db.Profiles.Find(id);
+            string idUser = User.Identity.GetUserId();
+            Profile profilSender = db.Profiles.SingleOrDefault(p => p.UserId == idUser);
+            //caut notificarea asociata userului, deoarece userul a primit cererea de prietenie 
+            //de la profilul pe care se afla
+            Notification notification = db.Notifications.SingleOrDefault(n => n.ReceiverId == profilSender.Id);
+            notification.FriendRequests.Remove(profil);
+            profil.SentFriendRequests.Remove(profilSender);
+            db.SaveChanges();
+            if(profil.Friends == null)
+            {
+                profil.Friends = new List<Profile>();
+            }
+            if (!profil.Friends.Contains(profilSender))
+            {
+                profil.Friends.Add(profilSender);
+            }
+            if (profilSender.Friends == null)
+            {
+                profilSender.Friends = new List<Profile>();
+            }
+            if (!profilSender.Friends.Contains(profil))
+            {
+                profilSender.Friends.Add(profil);
+            }
+            db.SaveChanges();
+            return RedirectToAction("Show", new { id = profil.Id });
+        }
         public ActionResult FriendsAndGroups(int id)
         {
             //int id = int.Parse(profileId);

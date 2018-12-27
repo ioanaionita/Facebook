@@ -11,18 +11,37 @@
 }
 @if (@Model.UserId != ViewBag.currentUser)
 {
-    <form method="post" action="/Profile/AddFriend">
-        <button type="submit" class="btn btn-sm btn-success">Add friend</button>
-    </form>
-}
-<h2>@Model.FirstName @Model.LastName</h2>
-<p>Date of birth: @Model.DateOfBirth</p>
-<p>From @Model.City, @Model.Country</p>
-@if (ViewBag.allowEdit)
-{
-    <a href="/Profile/Edit/@Model.Id"> Update profile </a>
-}
 
-<a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
-<hr />
+    if (ViewBag.alreadyFriends)
+    {
+        <button type="submit" class="btn btn-sm btn-success" disabled>Friends</button>
+    }
+    if (ViewBag.friendRequestSent == true && ViewBag.alreadyFriends == false)
+    {
+        <button type="submit" class="btn btn-sm btn-success" disabled>Friend request sent</button>
+    }
+    if (ViewBag.acceptFriendRequest == true && ViewBag.alreadyFriends == false)
+    {
+        <form method="post" action="/Profile/AcceptFriendRequest/@Model.Id">
+            <button type="submit" class="btn btn-sm btn-success"> Accept friend request</button>
+            
+        </form>
+    }
+    if (ViewBag.alreadyFriends == false && ViewBag.friendRequestSent == false && ViewBag.acceptFriendRequest == false)
+    {
+        <form method="post" action="/Profile/AddFriend/@Model.Id">
+            <button type="submit" class="btn btn-sm btn-success"> Add friend</button>
+        </form>
+    }
+}
+    <h2>@Model.FirstName @Model.LastName</h2>
+    <p>Date of birth: @Model.DateOfBirth</p>
+    <p>From @Model.City, @Model.Country</p>
+    @if (ViewBag.allowEdit)
+    {
+        <a href="/Profile/Edit/@Model.Id"> Update profile </a>
+    }
+
+    <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
+    <hr />
 
