@@ -1,0 +1,19 @@
+﻿@model FacebookDAW.Models.Album
+@{
+    ViewBag.Title = "New Album";
+}
+
+<h2>@ViewBag.Title</h2>
+<form method="post" action="/Album/New">
+    @Html.HiddenFor(m => m.UserId)
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @Html.Label("Name", "Name")
+    <br />
+    @Html.TextBox("Name", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.Name, null, new { @class = "text-danger " })
+    <button class="btn btn-sm btn-success" type="submit">Adauga album</button>
+</form>
+<p></p>
+
+

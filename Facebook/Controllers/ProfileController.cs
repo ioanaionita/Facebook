@@ -250,6 +250,7 @@ namespace Facebook.Controllers
                 //profilul curent a primit o cerere de la profilul care i-a trimis
                 //notificarea apartine profilului pe care sunt, el primeste cererea de prietenie
                 notification.FriendRequests.Add(profilSender);
+                
                 //ii notez si utilizatorului care a trimis cererea
                 profilSender.SentFriendRequests.Add(profil);
                 if (profil.Friends.Contains(profilSender))

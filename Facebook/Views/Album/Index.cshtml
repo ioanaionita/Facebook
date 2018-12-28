@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Albums";
+}
+
+<h2>@ViewBag.Title</h2>
+@foreach( FacebookDAW.Models.Album a in ViewBag.albums)
+{
+<div class="panel panel-default">
+    <div class="panel-heading"><strong> @a.Name </strong> </div>
+    <div class="panel-body">
+        <a class="btn btn-sm btn-success" href="/Album/Show/@a.Id">View album</a>
+
+    </div>
+</div>
+        }
+

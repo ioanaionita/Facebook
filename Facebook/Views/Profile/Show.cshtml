@@ -24,7 +24,7 @@
     {
         <form method="post" action="/Profile/AcceptFriendRequest/@Model.Id">
             <button type="submit" class="btn btn-sm btn-success"> Accept friend request</button>
-            
+
         </form>
     }
     if (ViewBag.alreadyFriends == false && ViewBag.friendRequestSent == false && ViewBag.acceptFriendRequest == false)
@@ -34,14 +34,19 @@
         </form>
     }
 }
-    <h2>@Model.FirstName @Model.LastName</h2>
-    <p>Date of birth: @Model.DateOfBirth</p>
-    <p>From @Model.City, @Model.Country</p>
-    @if (ViewBag.allowEdit)
-    {
-        <a href="/Profile/Edit/@Model.Id"> Update profile </a>
-    }
-
+<h2>@Model.FirstName @Model.LastName</h2>
+<p>Date of birth: @Model.DateOfBirth</p>
+<p>From @Model.City, @Model.Country</p>
+@if (ViewBag.allowEdit)
+{
+    <a href="/Profile/Edit/@Model.Id"> Update profile </a>
+}
+@if (@Model.UserId == ViewBag.currentUser)
+{
+    <a href="/Album/New/@Model.UserId">Add new album</a>
+    <br />
+    <a href="/Album/Index/@Model.UserId">See your albums</a>
+}
     <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
-    <hr />
+<hr />
 

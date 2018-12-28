@@ -1,0 +1,23 @@
+﻿@model FacebookDAW.Models.Album
+@{
+    ViewBag.Title = "Show";
+}
+
+<h2>@Model.Name</h2>
+@using (Html.BeginForm("AddPicture", "Album", FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+{   <input type="hidden" value="@Model.Id" id="albumId" name="albumId" />
+    <label for="file">Upload Image:</label>
+    <input type="file" name="file" id="file" /><br><br>
+    <input type="submit" value="Upload Image" />
+    <br><br>
+    @ViewBag.Message
+}
+@foreach(FacebookDAW.Models.Photo p in ViewBag.photos)
+{
+    <img src="@p.Description" alt="albumPic" />
+
+}
+
+
+
