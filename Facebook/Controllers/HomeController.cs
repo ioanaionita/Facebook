@@ -19,6 +19,7 @@ namespace Facebook.Controllers
                 string userId = User.Identity.GetUserId();
                 Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
                 Notification notifications = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
+                 
                 ViewBag.notifications = notifications;
             }
             return View();

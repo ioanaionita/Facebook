@@ -28,7 +28,6 @@ namespace Facebook.Controllers
             var currentUserId = User.Identity.GetUserId();
             var profiles = db.Profiles.Where(p => p.UserId!=currentUserId);
             ViewBag.Profiles = profiles;
-
             return View();
         }
         public ActionResult Show(int id)
@@ -294,6 +293,15 @@ namespace Facebook.Controllers
                 profilSender.Friends.Add(profil);
             }
             db.SaveChanges();
+            //odata cu un prieten nou, e instantiat si un nou chat gol cu acesta 
+            Chat chat = new Chat();
+            chat.Messages = new List<Message>();
+            chat.Profiles = new List<Profile>(new Profile[] { profilSender, profil });
+            chat.Name = profil.FirstName + profilSender.FirstName;
+            db.Chats.Add(chat);
+            db.SaveChanges();
+            
+            
             return RedirectToAction("Show", new { id = profil.Id });
         }
         public ActionResult FriendsAndGroups(int id)
