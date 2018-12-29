@@ -3,9 +3,12 @@ using FacebookDAW.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 
 namespace Facebook.Controllers
 {
@@ -36,7 +39,7 @@ namespace Facebook.Controllers
 
             Profile friendProfile = db.Profiles.Find(id);
             Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
-            int chatId = new int();
+            int chatId = new int(); 
 
             foreach(var chat in db.Chats)
             {
@@ -44,22 +47,25 @@ namespace Facebook.Controllers
                 if(chat.Profiles.Contains(myProfile) && chat.Profiles.Contains(friendProfile) && chat.Profiles.Count == 2)
                 {
                     chatId = chat.Id;
+
+                    //de ce Viewbag.oldMessages e mereu null???????????????
+
                     ViewBag.oldMessages = chat.Messages; // preiau mesajele vechi din conversatia cu profilul friendProfile
                     break;
-                }
+                }               
             }
 
             ViewBag.firstnameFriend = friendProfile.FirstName;
             ViewBag.lastnameFriend = friendProfile.LastName;
-            return RedirectToAction("NewMessage", new { chatId = chatId });
+            return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myId});
         }
 
-        public ActionResult NewMessage(int chatId)
+        public ActionResult NewMessage(int chatId, string senderId)
         {
+            ViewBag.chatId = chatId;
+            ViewBag.SenderId = senderId; 
             Message message = new Message();
-            message.SenderId = User.Identity.GetUserId();
-            message.ChatId = chatId;
-            return View("MessageBox", message);
+            return View("MessageBox", message); 
         }
 
         [HttpPost]
@@ -70,12 +76,23 @@ namespace Facebook.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    /*
+                    ViewBag.Campchat = message.ChatId;
+                    ViewBag.Campsender = message.SenderId;
+                    ViewBag.Campcontent = message.Content;
+                    */
+                    // !! SendDate are valoarea 01.01.2018 00:00:00 = null in baza de date; modificare explicita 
+                    message.SendDate = DateTime.Now;
+                    //  ViewBag.Campdate = message.SendDate;
                     db.Messages.Add(message);
                     Chat chat = db.Chats.Find(message.ChatId);
                     chat.Messages.Add(message);
+                    ViewBag.oldMessages = chat.Messages;
                     db.SaveChanges();
+                   
                     TempData["message"] = "Message was sent!";
                     //return tot catre view-ul MessageBox pt a continua conversatia 
+                    
                     return View("MessageBox", message);
                 }
                 else
@@ -85,7 +102,7 @@ namespace Facebook.Controllers
             }
             catch (Exception e)
             {
-                return RedirectToAction("Index", "Chat");
+                return View("MessageBox", message);
             }
         }
         

@@ -1,16 +1,24 @@
 ﻿@model FacebookDAW.Models.Message
-@{ 
+@{
     ViewBag.Title = "MessageBox";
 }
 
-<h3>@ViewBag.firstnameFriend @ViewBag.lastnameFriend</h3>
+<!--
+<ul>
+    <li> @ViewBag.Campchat</li>
+    <li> @ViewBag.Campsender</li>
+    <li> @ViewBag.Campdate</li>
+    <li> @ViewBag.Campcontent</li>
+</ul>
+-->
 
+<h3>@ViewBag.firstnameFriend @ViewBag.lastnameFriend</h3>
 
 <!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
 @if (ViewBag.oldMessages != null)
 {
     <ul class="list-group">
-        @foreach (FacebookDAW.Models.Message message in ViewBag.oldMessages)
+        @foreach (var message in ViewBag.oldMessages)
         {
             <li class="list-group-item">
                 <strong>@message.Sender.FirstName : </strong> @message.Content
@@ -19,22 +27,28 @@
 
     </ul>
 }
+else
+{
+    <p>NUUU</p>
+}
 
 <!--trimiterea unui nou mesaj-->
     <form method="post" action="/Chat/NewMessage">
 
-        @Html.HiddenFor(m => m.SenderId)
-        @Html.HiddenFor(m => m.ChatId)
+        @Html.HiddenFor(m => m.SenderId, new { value = ViewBag.SenderId })
+        @Html.HiddenFor(m => m.ChatId, new { value = ViewBag.chatId })
         Type a message:
         @Html.TextBoxFor(m => m.Content, null, new { @class = "form-control", required = "required" })
-        @Html.TextBoxFor(m => m.SendDate, null, new { id = "SendDateTextbox", @class = "form-control", value = "", type="hidden" })
+        @Html.HiddenFor(m => m.SendDate)
 
         <button class="btn btn-sm btn-success" onClick="getSendDate()" type="submit">Send message</button>
     </form>
 
+<!--
     <script>
         function getSendDate() {
             textbox = document.getElementById("SendDateTextbox");
-            textbox.value = DateTime.Now.ToString();
+            textbox.value = DateTime.Now;
         }
     </script>
+-->
