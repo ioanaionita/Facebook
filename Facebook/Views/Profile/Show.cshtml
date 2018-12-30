@@ -41,12 +41,13 @@
 {
     <a href="/Profile/Edit/@Model.Id"> Update profile </a>
 }
+
 @if (@Model.UserId == ViewBag.currentUser)
 {
     <a href="/Album/New/@Model.UserId">Add new album</a>
     <br />
-    <a href="/Album/Index/@Model.UserId">See your albums</a>
 }
-    <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
+<a href="/Album/Index/@Model.Id">See the albums</a>
+<a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
 <hr />
 
