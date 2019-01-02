@@ -14,13 +14,43 @@ namespace Facebook.Controllers
         private ApplicationDbContext db = ApplicationDbContext.Create();
         public ActionResult Index()
         {
+            ViewBag.loggedUser = false;
             if(User.Identity.GetUserId()!= null)
             {
+                ViewBag.loggedUser = true;
                 string userId = User.Identity.GetUserId();
                 Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
                 Notification notifications = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
-                 
                 ViewBag.notifications = notifications;
+                ViewBag.notificationsCount = notifications.FriendRequests.Count();
+                //prin albumele profilului vreau sa iau pozele care sunt pending deja
+                List<Album> albums = new List<Album>();
+                foreach(var album in db.Albums)
+                {
+                    if(album.UserId == userId)
+                    {
+                        albums.Add(album);
+                    }
+                }
+                List<Photo> photos = new List<Photo>();
+                foreach(var photo in db.Photos)
+                {
+                    if (albums.Contains(photo.Album))
+                    {
+                        photos.Add(photo);
+                    }
+                }
+                List<Comment> pendingComments = new List<Comment>();
+                foreach(var comment in db.Comments)
+                {
+                    if (photos.Contains(comment.Photo) && comment.AcceptedStatus == 0)
+                    {
+                        pendingComments.Add(comment);
+                    }
+                }
+                ViewBag.pendingComments = pendingComments;
+                ViewBag.commentsCount = pendingComments.Count();
+
             }
             return View();
         }

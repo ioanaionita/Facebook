@@ -1,0 +1,62 @@
+﻿@model FacebookDAW.Models.Comment
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@ViewBag.albumName</h2>
+@if (TempData.ContainsKey("message"))
+{
+    <h3 class="alert alert-info" role="alert">@TempData["message"]</h3>
+    <br />
+}
+@if (TempData.ContainsKey("pending"))
+{
+    <h3 class="alert alert-info" role="alert">@TempData["pending"]</h3>
+    <br />
+
+}
+
+    <div class="card">
+        <div class="card-body">
+            <img src="@Url.Content(ViewBag.currentPhoto)" height="100px" weight="100px" alt="Sper sa nu apara mesajul asta" />
+            <br />
+            <br />
+            @if (ViewBag.comments == null)
+            {
+                <p>There are no comments yet.</p>
+            }
+
+            else
+            {
+                foreach (FacebookDAW.Models.Comment c in ViewBag.comments)
+                {
+                    if (c.AcceptedStatus == 1)
+                    {
+                        <div class="card">
+                            <div class="card-body">
+                                <p><strong>@c.FirstNameUser @c.LastNameUser</strong></p>
+                                <p>@c.Content</p>
+                                <small style="color:grey">@c.DateCreated</small>
+                                @if (ViewBag.allowDelete)
+                                {
+                                    <a class="btn btn-sm btn-success" href="/Comment/Delete/@c.Id">Delete comment</a>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            <form method="post" action="/Comment/New/@ViewBag.currentPhotoId">
+                @Html.HiddenFor(m => m.UserId)
+                @Html.HiddenFor(m => m.PhotoId)
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <br />
+                <div class="input-group">
+                    @Html.TextBox("Content", null, new { @class = "form-control", required = "required", placeholder = "Leave a comment" })
+                    <span class="input-group-btn">
+                        <button class="btn btn-sm btn-success" type="submit">Add comment</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>

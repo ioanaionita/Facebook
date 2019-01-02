@@ -12,7 +12,6 @@ namespace Facebook.Controllers
 {
     public class ProfileController : Controller
     {
-        public static int friendRequests = 0;
         private ApplicationDbContext db = ApplicationDbContext.Create();
         // GET: Profile
         public ActionResult Index()

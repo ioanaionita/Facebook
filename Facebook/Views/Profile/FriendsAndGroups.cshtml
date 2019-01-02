@@ -9,7 +9,7 @@
     <ul>
         @foreach (FacebookDAW.Models.Profile friend in ViewBag.friends)
         {
-            <li>@friend.LastName @friend.FirstName</li>
+            <li><a href="/Profile/Show/@friend.Id">@friend.LastName @friend.FirstName</a></li>
         }
     </ul>
 }

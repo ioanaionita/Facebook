@@ -7,16 +7,18 @@
   
     
 </div>
-
+@if (ViewBag.loggedUser)
+{
+<h3>Friend requests</h3>
 <div class="row">
     <div class="col-md-4">
-     @if(ViewBag.notifications != null)
+     @if (ViewBag.notifications != null)
      {
-         if(ViewBag.notifications.FriendRequests != null)
+         if (ViewBag.notifications.FriendRequests != null && ViewBag.notificationsCount !=0)
          {
-             foreach( var friendRequest in ViewBag.notifications.FriendRequests)
+             foreach (var friendRequest in ViewBag.notifications.FriendRequests)
              {
-                <div> @friendRequest.FirstName @friendRequest.LastName sent you a friend request
+                <div> <a href="/Profile/Show/@friendRequest.Id">@friendRequest.FirstName @friendRequest.LastName </a> sent you a friend request
         
                     <form method="post" action="/Profile/AcceptFriendRequest/@friendRequest.Id">
                         <button type="submit" class="btn btn-sm btn-success"> Add friend</button>
@@ -24,8 +26,34 @@
                 </div>
              }
          }
+         else
+         {
+             <p class="font-italic"> There are no new friend requests.</p>
+         }
      }
-
-    </div>
-   
+    </div>   
 </div>
+<h3>New comments</h3>
+<div class="row">
+    <div class="col-md-4">
+        @if (ViewBag.pendingComments != null && ViewBag.commentsCount!=0)
+        {
+            foreach (var comment in ViewBag.pendingComments)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <span class="font-weight-bold">@comment.FirstNameUser @comment.LastNameUser</span> commented on your photo: "<span class="font-italic">@comment.Content</span>"
+                        <br />
+                        <a class="btn btn-sm btn-success" href="/Comment/AcceptComment/@comment.Id">Accept comment</a>
+                        <a class="btn btn-sm btn-success" href="/Comment/RejectComment/@comment.Id">Reject comment</a>
+                    </div>
+                </div>
+            }
+         }
+         else
+         {
+            <p class="font-italic"> There are no new comments.</p>
+         }
+     </div>
+ </div>
+ }

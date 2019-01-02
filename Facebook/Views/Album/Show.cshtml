@@ -26,11 +26,24 @@
     <div class="card">
         <div class="card-body">
             <img src="@Url.Content(p.Description)" height="100px" weight="100px" alt="Sper sa nu apara mesajul asta" />
-            @if (ViewBag.allowLike)
+            <br />
+            @if (p.Likes == 1)
             {
-            <a class="btn btn-sm btn-success" href="/Album/Like/@p.Id">Like photo</a>
+                <small>1 person appreciates this photo</small>
             }
-
+            else
+            {
+                <small>@p.Likes people appreciate this photo</small>
+            }
+            @if (!p.PeopleThatLiked.Contains(ViewBag.userProfile) && ViewBag.userProfile != ViewBag.currentProfile)
+            {
+                <a class="btn btn-sm btn-success" href="/Album/Like/@p.Id">Like photo</a>
+            }
+            <a class="btn btn-sm btn-success" href="/Comment/Index/@p.Id">View comments</a>
+            @if (ViewBag.allowDelete)
+            {
+            <a class="btn btn-sm btn-success" href="/Album/DeletePhoto/@p.Id">Delete photo</a>
+            }
             <br />
         </div>
     </div>

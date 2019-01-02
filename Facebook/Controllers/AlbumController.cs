@@ -47,9 +47,11 @@ namespace Facebook.Controllers
                     string userId = User.Identity.GetUserId();
                     album.UserId = userId;
                     db.Albums.Add(album);
+                    string userProfile = album.UserId;
+                    int profileId = db.Profiles.SingleOrDefault(p => p.UserId == userProfile).Id;
                     db.SaveChanges();
                     TempData["message"] = "Albumul a fost adaugat!";
-                    return RedirectToAction("Index", "Album");
+                    return RedirectToAction("Index", new { id = profileId });
                 }
                 else
                 {
@@ -73,9 +75,18 @@ namespace Facebook.Controllers
             {
                 ViewBag.allowLike = true;
             }
+            string currentUserId = User.Identity.GetUserId();
+            Profile userProfile = db.Profiles.SingleOrDefault(u => u.UserId == currentUserId);
+            ViewBag.userProfile = userProfile;
+            ViewBag.currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
+            ViewBag.allowDelete = false;
+            if(User.IsInRole("Administrator") || userId == User.Identity.GetUserId())
+            {
+                ViewBag.allowDelete = true;
+            }
             return View(album);
         }
-        [HttpPost]
+        //[HttpPost]
         public ActionResult AddPicture(int albumId, HttpPostedFileBase file)
         {
             if (file != null && file.ContentLength > 0)
@@ -108,30 +119,26 @@ namespace Facebook.Controllers
             Photo currentPhoto = db.Photos.Find(id);
             Album currentAlbum = db.Albums.SingleOrDefault(a => a.Id == currentPhoto.AlbumId);
             Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == currentAlbum.UserId);
-            Notification currentNotification = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
-            if(currentNotification == null)
-            {
-                currentNotification = new Notification();
-                currentNotification.ReceiverId = currentProfile.Id;
-            }
             string currentUser = User.Identity.GetUserId();
             Profile userProfile = db.Profiles.SingleOrDefault(p => p.UserId == currentUser);
-            Tuple<Photo, Profile> tuplu = new Tuple<Photo, Profile>(currentPhoto, userProfile);
-            ViewBag.alreadyLikedPhoto = false;
-            if(currentNotification.Likes == null)
+            //Tuple<Photo, Profile> tuplu = new Tuple<Photo, Profile>(currentPhoto, userProfile);
+            if(currentPhoto.PeopleThatLiked == null)
             {
-                currentNotification.Likes = new List<Tuple<Photo, Profile>>();
-
+                currentPhoto.PeopleThatLiked = new List<Profile>();
             }
-            else
+            if (!currentPhoto.PeopleThatLiked.Contains(userProfile))
             {
-                if(currentNotification.Likes.Contains(tuplu))
-                {
-                    ViewBag.alreadyLikedPhoto = true;
-                }
-
+                currentPhoto.PeopleThatLiked.Add(userProfile);
             }
-            currentNotification.Likes.Add(Tuple.Create(currentPhoto, userProfile));
+            currentPhoto.Likes = currentPhoto.PeopleThatLiked.ToList().Count();
+            db.SaveChanges();
+            return RedirectToAction("Show", new { id = currentAlbum.Id });
+        }
+        public ActionResult DeletePhoto(int id)
+        {
+            Photo currentPhoto = db.Photos.Find(id);
+            Album currentAlbum = db.Albums.SingleOrDefault(a => a.Id == currentPhoto.AlbumId);
+            db.Photos.Remove(currentPhoto);
             db.SaveChanges();
             return RedirectToAction("Show", new { id = currentAlbum.Id });
         }
