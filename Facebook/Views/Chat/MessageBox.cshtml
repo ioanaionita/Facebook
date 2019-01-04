@@ -2,13 +2,15 @@
 @{
     ViewBag.Title = "MessageBox";
 }
-
-<h3>@ViewBag.firstnameFriend @ViewBag.lastnameFriend</h3>
+@if (TempData["firstnameFriend"] != null && TempData["lastnameFriend"] != null)
+{
+<h3>@TempData["firstnameFriend"] @TempData["lastnameFriend"]</h3>
+}
 
 <!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
-@if (ViewBag.oldMessages != null)
+@if (ViewBag.oldMessages.Count != 0)
 {
-    <div id="oldMessages" style="overflow:auto;">
+    <div id="oldMessages" style="height:300px; overflow-y: scroll;">
         <ul class="list-group">
             @foreach (var message in ViewBag.oldMessages)
             {
@@ -16,25 +18,24 @@
                     <strong>@message.Sender.FirstName : </strong> @message.Content
                 </li>
             }
-
         </ul>
     </div>
 }
 else
 {
-    <p>NUUU</p>
+    <p>No older messages</p>
 }
 <!--trimiterea unui nou mesaj-->
-    <form method="post" action="/Chat/NewMessage">
+<form method="post" action="/Chat/NewMessage/">
 
-        @Html.HiddenFor(m => m.SenderId, new { value = ViewBag.SenderId })
-        @Html.HiddenFor(m => m.ChatId, new { value = ViewBag.chatId })
-        Type a message:
-        @Html.TextBoxFor(m => m.Content, null, new { @class = "form-control", required = "required" })
-        @Html.HiddenFor(m => m.SendDate)
+    @Html.HiddenFor(m => m.SenderId, new { value = ViewBag.SenderId })
+    @Html.HiddenFor(m => m.ChatId, new { value = ViewBag.chatId })
+    Type a message:
+    @Html.TextBoxFor(m => m.Content, null, new { @class = "form-control", required = "required" })
+    @Html.HiddenFor(m => m.SendDate)
 
-        <button class="btn btn-sm btn-success" onClick="getSendDate()" type="submit">Send message</button>
-    </form>
+    <button class="btn btn-sm btn-success" onClick="getSendDate()" type="submit">Send message</button>
+</form>
 
 <!--
     <script>
