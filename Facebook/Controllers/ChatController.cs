@@ -44,13 +44,20 @@ namespace Facebook.Controllers
             foreach(var chat in db.Chats)
             {
                 //caut in baza de date chatul format doar din profilurile: myProfile si friendProfile
-                if(chat.Profiles.Contains(myProfile) && chat.Profiles.Contains(friendProfile) && chat.Profiles.Count == 2)
+                if(chat.Profiles.Contains(myProfile) && chat.Profiles.Contains(friendProfile) && chat.Profiles.Count() == 2)
                 {
                     chatId = chat.Id;
 
                     //de ce Viewbag.oldMessages e mereu null???????????????
+                    if (chat.Messages == null)
+                    {
+                        ViewBag.oldMessages = "";
+                    }
+                    else
+                    {
+                        ViewBag.oldMessages = chat.Messages; // preiau mesajele vechi din conversatia cu profilul friendProfile
 
-                    ViewBag.oldMessages = chat.Messages; // preiau mesajele vechi din conversatia cu profilul friendProfile
+                    }
                     break;
                 }               
             }
@@ -58,6 +65,7 @@ namespace Facebook.Controllers
             ViewBag.firstnameFriend = friendProfile.FirstName;
             ViewBag.lastnameFriend = friendProfile.LastName;
             return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myId});
+            //return RedirectToAction("MessageBox", "Chat");
         }
 
         public ActionResult NewMessage(int chatId, string senderId)
