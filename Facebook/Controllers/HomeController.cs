@@ -22,7 +22,10 @@ namespace Facebook.Controllers
                 Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
                 Notification notifications = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
                 ViewBag.notifications = notifications;
-                ViewBag.notificationsCount = notifications.FriendRequests.Count();
+                if (notifications != null)
+                {
+                    ViewBag.notificationsCount = notifications.FriendRequests.Count();
+                }
                 //prin albumele profilului vreau sa iau pozele care sunt pending deja
                 List<Album> albums = new List<Album>();
                 foreach(var album in db.Albums)
