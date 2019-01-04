@@ -3,35 +3,27 @@
     ViewBag.Title = "MessageBox";
 }
 
-<!--
-<ul>
-    <li> @ViewBag.Campchat</li>
-    <li> @ViewBag.Campsender</li>
-    <li> @ViewBag.Campdate</li>
-    <li> @ViewBag.Campcontent</li>
-</ul>
--->
-
 <h3>@ViewBag.firstnameFriend @ViewBag.lastnameFriend</h3>
 
 <!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
 @if (ViewBag.oldMessages != null)
 {
-    <ul class="list-group">
-        @foreach (var message in ViewBag.oldMessages)
-        {
-            <li class="list-group-item">
-                <strong>@message.Sender.FirstName : </strong> @message.Content
-            </li>
-        }
+    <div id="oldMessages" style="overflow:auto;">
+        <ul class="list-group">
+            @foreach (var message in ViewBag.oldMessages)
+            {
+                <li class="list-group-item">
+                    <strong>@message.Sender.FirstName : </strong> @message.Content
+                </li>
+            }
 
-    </ul>
+        </ul>
+    </div>
 }
 else
 {
     <p>NUUU</p>
 }
-
 <!--trimiterea unui nou mesaj-->
     <form method="post" action="/Chat/NewMessage">
 

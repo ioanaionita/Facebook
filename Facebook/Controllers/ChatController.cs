@@ -39,6 +39,7 @@ namespace Facebook.Controllers
 
             Profile friendProfile = db.Profiles.Find(id);
             Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
+            int myProfileId = myProfile.Id;
             int chatId = new int(); 
 
             foreach(var chat in db.Chats)
@@ -47,8 +48,6 @@ namespace Facebook.Controllers
                 if(chat.Profiles.Contains(myProfile) && chat.Profiles.Contains(friendProfile) && chat.Profiles.Count() == 2)
                 {
                     chatId = chat.Id;
-
-                    //de ce Viewbag.oldMessages e mereu null???????????????
                     if (chat.Messages == null)
                     {
                         ViewBag.oldMessages = "";
@@ -64,14 +63,14 @@ namespace Facebook.Controllers
 
             ViewBag.firstnameFriend = friendProfile.FirstName;
             ViewBag.lastnameFriend = friendProfile.LastName;
-            return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myId});
+            return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myProfileId});
             //return RedirectToAction("MessageBox", "Chat");
         }
 
-        public ActionResult NewMessage(int chatId, string senderId)
+        public ActionResult NewMessage(int chatId, int senderId)
         {
             ViewBag.chatId = chatId;
-            ViewBag.SenderId = senderId; 
+            ViewBag.SenderId = senderId;     
             Message message = new Message();
             return View("MessageBox", message); 
         }
@@ -90,6 +89,9 @@ namespace Facebook.Controllers
                     ViewBag.Campcontent = message.Content;
                     */
                     // !! SendDate are valoarea 01.01.2018 00:00:00 = null in baza de date; modificare explicita 
+                    //message.Sender = sender;
+                    Profile sender = db.Profiles.Find(message.SenderId);
+                    message.Sender = sender;
                     message.SendDate = DateTime.Now;
                     //  ViewBag.Campdate = message.SendDate;
                     db.Messages.Add(message);
