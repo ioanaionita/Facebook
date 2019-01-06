@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "View all groups";
+}
+
+<h2>@ViewBag.Title</h2>
+@if (TempData.ContainsKey("grup"))
+{
+    <h3 class="alert alert-info" role="alert">@ViewBag.grup</h3>
+}
+@if (ViewBag.Groups != null)
+{
+    foreach (FacebookDAW.Models.Group g in ViewBag.Groups)
+    {
+        <div class="card">
+            <div class="card-body">
+                @g.Name  <small>created at: @g.CreatedDate</small>
+                <a class="btn btn-sm btn-success" href="/Group/JoinGroup/@g.Id">Join Group</a>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="font-italic">There are no groups yet.</p>
+}

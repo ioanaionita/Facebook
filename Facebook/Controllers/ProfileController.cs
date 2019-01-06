@@ -14,7 +14,7 @@ namespace Facebook.Controllers
     {
         private ApplicationDbContext db = ApplicationDbContext.Create();
         // GET: Profile
-        public ActionResult Index()
+        public ActionResult Index(string name = "")
         {
             // preluam lista de categorii din metoda GetAllCategories()
             //profile.Groups = GetAllGroups(profile);
@@ -26,13 +26,33 @@ namespace Facebook.Controllers
             }
             //transmitem catre Index view toate profilurile, in afara de cel al utilizatorului curent (People you may know);
             var currentUserId = User.Identity.GetUserId();
-            var profiles = db.Profiles.Where(p => p.UserId!=currentUserId);
-            ViewBag.Profiles = profiles;
+            if(name == "")
+            {
+                var profiles = db.Profiles.Where(p => p.UserId != currentUserId);
+                ViewBag.Profiles = profiles;
+            }
+            else
+            {
+                name = name.ToLower();
+                List<Profile> foundProfiles = new List<Profile>();
+                foreach(Profile p in db.Profiles)
+                {
+                    string firstName = p.FirstName.ToLower();
+                    string lastName = p.LastName.ToLower();
+                    if(firstName.Contains(name) || lastName.Contains(name))
+                    {
+                        foundProfiles.Add(p);
+                    }
+                }
+                ViewBag.Profiles = foundProfiles;
+            }
+            
             return View();
         }
         public ActionResult Show(int id)
         {
             Profile profile = db.Profiles.Find(id);
+            ViewBag.Private = profile.ProfileVisibility;
             ViewBag.Profile = profile;
             ViewBag.DateOfBirth = profile.DateOfBirth.Date.ToString("dd.MM.yyyy");
             ViewBag.allowEdit = false;
@@ -184,7 +204,7 @@ namespace Facebook.Controllers
         public ActionResult Edit(int id)
         {
             Profile profile = db.Profiles.Find(id);
-            if(profile.UserId != User.Identity.GetUserId())
+            if(profile.UserId != User.Identity.GetUserId() && !User.IsInRole("Administrator"))
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -314,6 +334,13 @@ namespace Facebook.Controllers
             ViewBag.numberOfGroups = profile.Groups.Count();
             ViewBag.groups = profile.Groups;
             return View();
+        }
+
+        public ActionResult Search()
+        {
+            string nameSearched = Request.Form["search"];
+            nameSearched = nameSearched.Trim();
+            return RedirectToAction("Index", new { name = nameSearched });
         }
     }
 }

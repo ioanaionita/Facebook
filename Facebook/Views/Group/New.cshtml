@@ -1,0 +1,19 @@
+﻿@model FacebookDAW.Models.Group
+@{
+    ViewBag.Title = "New Group";
+}
+
+<h2>@ViewBag.Title</h2>
+<form method="post" action="/Group/New">
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @Html.Label("Name", "Name")
+    <br />
+    @Html.TextBox("Name", null, new { @class = "form-control", required = "required" })
+    @Html.ValidationMessageFor(model => model.Name, null, new { @class = "text-danger " })
+    <button class="btn btn-sm btn-success" type="submit">Adauga grup</button>
+</form>
+<p></p>
+
+
+

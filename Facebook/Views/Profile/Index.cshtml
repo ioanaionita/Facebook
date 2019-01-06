@@ -8,26 +8,30 @@
 {
     <h3 class="alert alert-info" role="alert">@ViewBag.message</h3>
 }
+<form method="post" action="/Profile/Search">
+    <input type="text" name="search" placeholder="Type your friend's name" />
+    <button type="submit" class="btn btn-sm btn-success">Search</button>
+</form>
 @foreach (FacebookDAW.Models.Profile profile in ViewBag.Profiles)
 {
     <div class="panel panel-default">
         <div class="panel-heading"><strong>@profile.FirstName @profile.LastName</strong> </div>
-        <div class="panel-body">
-            From: @profile.City, @profile.Country
-            <br>
-            <a class="btn btn-sm btn-success" href="/Profile/Show/@profile.Id">Show profile</a>
-            <!--<a class="btn btn-sm btn-success" href="/Profile/AddFriend/@@profile.Id" onclick="addFriend()" id ="addFriend">Add friend</a>-->
-            <!--<form method="post" action="/Profile/AddFriend/@@profile.Id">
+            <div class="panel-body">
+                From: @profile.City, @profile.Country
+                <br>
+                <a class="btn btn-sm btn-success" href="/Profile/Show/@profile.Id">Show profile</a>
+                <!--<a class="btn btn-sm btn-success" href="/Profile/AddFriend/@@profile.Id" onclick="addFriend()" id ="addFriend">Add friend</a>-->
+                <!--<form method="post" action="/Profile/AddFriend/@@profile.Id">
                 <button type="submit" class="btn btn-sm btn-success">Add friend</button>
-            </form>-->
-        </div>
+                </form>-->
+            </div>
     </div>
-}
+ }
 
 
-<script type="text/javascript">
-    function addFriend() {
-        document.getElementById("addFriend").innerHTML = "Friend Request Sent";
-    }
-</script>
+        <script type="text/javascript">
+            function addFriend() {
+                document.getElementById("addFriend").innerHTML = "Friend Request Sent";
+            }
+        </script>
 

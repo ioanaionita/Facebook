@@ -23,6 +23,12 @@ namespace Facebook.Controllers
             string userId = db.Profiles.SingleOrDefault(p => p.Id == id).UserId;
             var albums = db.Albums.Where(a => a.UserId == userId);
             ViewBag.albums = albums;
+            string currentUser = User.Identity.GetUserId();
+            ViewBag.Delete = false;
+            if(User.IsInRole("Administrator") || currentUser == userId)
+            {
+                ViewBag.Delete = true;
+            }
             return View();
         }
         public ActionResult New(string userId)
@@ -141,6 +147,22 @@ namespace Facebook.Controllers
             db.Photos.Remove(currentPhoto);
             db.SaveChanges();
             return RedirectToAction("Show", new { id = currentAlbum.Id });
+        }
+        public ActionResult DeleteAlbum(int id)
+        {
+            Album deletedAlbum = db.Albums.Find(id);
+            int profileId = db.Profiles.SingleOrDefault(p => p.UserId == deletedAlbum.UserId).Id;
+            int albumId = deletedAlbum.Id;
+            foreach(Photo p in db.Photos)
+            {
+                if(p.AlbumId == albumId)
+                {
+                    db.Photos.Remove(p);
+                }
+            }
+            db.Albums.Remove(deletedAlbum);
+            db.SaveChanges();
+            return RedirectToAction("Index", new { id = profileId});
         }
     }
 }
