@@ -19,7 +19,13 @@
                 @if (ViewBag.allowDelete)
                 {
                     <a class="btn btn-sm btn-danger" href="/Chat/DeleteMessage/@message.Id">Delete message</a>
+
                 }
+                @if (message.SenderId == ViewBag.myId || ViewBag.allowDelete)
+                {
+                    <a class="btn btn-sm btn-success" href="/Chat/EditMessage/@message.Id">Edit message</a>
+                }
+
             </li>
             }
         </ul>

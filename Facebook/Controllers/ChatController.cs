@@ -28,6 +28,7 @@ namespace Facebook.Controllers
                 Profile admin = db.Profiles.SingleOrDefault(p => p.UserId == userId);
                 foreach(Profile p in db.Profiles)
                 {
+                    
                     if(p.Friends == null)
                     {
                         p.Friends = new List<Profile>();
@@ -72,6 +73,7 @@ namespace Facebook.Controllers
             Profile friendProfile = db.Profiles.Find(id);
             Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
             int myProfileId = myProfile.Id;
+            ViewBag.myId = myProfileId;
             int chatId = new int();
             var oldMessages = new List<Message>();
 
@@ -91,6 +93,7 @@ namespace Facebook.Controllers
             {
                 TempData["allowDelete"] = true;
             }
+          
             TempData["isAdmin"] = false;
             if (User.IsInRole("Admin"))
             {
@@ -109,9 +112,10 @@ namespace Facebook.Controllers
             string myId = User.Identity.GetUserId();
 
             Group group = db.Groups.Find(id);
-
+            
             Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
             int myProfileId = myProfile.Id;
+            ViewBag.myId = myProfileId;
             //iau chat-ul corespunzator grupului
             Chat groupChat = db.Chats.SingleOrDefault(c => c.GroupId == group.Id);
 
@@ -125,7 +129,7 @@ namespace Facebook.Controllers
                 TempData["allowDelete"] = true;
             }
             TempData["listOldMessages"] = oldMessages;
-            return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myProfileId });
+             return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myProfileId });
         }
         public ActionResult NewMessage(int chatId, int senderId)
         {
@@ -137,6 +141,7 @@ namespace Facebook.Controllers
             Message message = new Message();
             ViewBag.allowDelete = TempData["allowDelete"];
             ViewBag.isAdmin = TempData["isAdmin"];
+            ViewBag.myId = senderId;
             return View("MessageBox", message); 
         }
         public ActionResult DeleteMessage(int id)
@@ -160,6 +165,39 @@ namespace Facebook.Controllers
             }
             
 
+        }
+        public ActionResult EditMessage(int id)
+        {
+            Message message = db.Messages.Find(id);
+            ViewBag.Message = message;
+            return View(message);
+        }
+        [HttpPut]
+        public ActionResult EditMessage(int id, Message requestMessage)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Message message = db.Messages.Find(id);
+                    if (TryUpdateModel(message))
+                    {
+                        message.Content = requestMessage.Content;   
+                        db.SaveChanges();
+
+                    }
+                    return RedirectToAction("EditMessage", "Chat", new { id = message.Id });
+                }
+                else
+                {
+                    return RedirectToAction("EditMessage", "Chat", new { id = id });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("EditMessage", "Chat", new { id = id });
+            }
         }
 
         [HttpPost]
@@ -186,7 +224,7 @@ namespace Facebook.Controllers
                     chat.Messages.Add(message);
                     ViewBag.oldMessages = chat.Messages.OrderBy(x => x.SendDate).ToList();
                     db.SaveChanges();
-                   
+                    ViewBag.myId = message.SenderId;
                     TempData["message"] = "Message was sent!";
                     //return tot catre view-ul MessageBox pt a continua conversatia 
                     ViewBag.allowDelete = false;
