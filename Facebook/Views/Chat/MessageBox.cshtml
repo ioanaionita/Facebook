@@ -14,9 +14,13 @@
         <ul class="list-group">
             @foreach (var message in ViewBag.oldMessages)
             {
-                <li class="list-group-item">
-                    <strong>@message.Sender.FirstName : </strong> @message.Content
-                </li>
+            <li class="list-group-item">
+                <strong>@message.Sender.FirstName : </strong> @message.Content
+                @if (ViewBag.allowDelete)
+                {
+                    <a class="btn btn-sm btn-danger" href="/Chat/DeleteMessage/@message.Id">Delete message</a>
+                }
+            </li>
             }
         </ul>
     </div>

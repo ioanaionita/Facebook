@@ -35,14 +35,14 @@
             {
                 <small>@p.Likes people appreciate this photo</small>
             }
-            @if (!p.PeopleThatLiked.Contains(ViewBag.userProfile) && ViewBag.userProfile != ViewBag.currentProfile)
+            @if (!ViewBag.userProfile.LikedPhotos.Contains(p) && !p.PeopleThatLiked.Contains(ViewBag.userProfile) && ViewBag.userProfile != ViewBag.currentProfile)
             {
                 <a class="btn btn-sm btn-success" href="/Album/Like/@p.Id">Like photo</a>
             }
             <a class="btn btn-sm btn-success" href="/Comment/Index/@p.Id">View comments</a>
             @if (ViewBag.allowDelete)
             {
-            <a class="btn btn-sm btn-success" href="/Album/DeletePhoto/@p.Id">Delete photo</a>
+            <a class="btn btn-sm btn-danger" href="/Album/DeletePhoto/@p.Id">Delete photo</a>
             }
             <br />
         </div>

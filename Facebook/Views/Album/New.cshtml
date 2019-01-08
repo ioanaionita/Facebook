@@ -10,7 +10,7 @@
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     @Html.Label("Name", "Name")
     <br />
-    @Html.TextBox("Name", null, new { @class = "form-control", required = "required", placeholder="Type your group's name" })
+    @Html.TextBox("Name", null, new { @class = "form-control", required = "required", placeholder="Type your album's name" })
     @Html.ValidationMessageFor(model => model.Name, null, new { @class = "text-danger " })
    
     <button class="btn btn-sm btn-success" type="submit">Adauga album</button>

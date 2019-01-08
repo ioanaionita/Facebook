@@ -56,7 +56,7 @@ namespace Facebook.Controllers
                     string userProfile = album.UserId;
                     int profileId = db.Profiles.SingleOrDefault(p => p.UserId == userProfile).Id;
                     db.SaveChanges();
-                    TempData["message"] = "Albumul a fost adaugat!";
+                    TempData["newAlbum"] = "Albumul a fost adaugat!";
                     return RedirectToAction("Index", new { id = profileId });
                 }
                 else
@@ -135,6 +135,14 @@ namespace Facebook.Controllers
             if (!currentPhoto.PeopleThatLiked.Contains(userProfile))
             {
                 currentPhoto.PeopleThatLiked.Add(userProfile);
+            }
+            if(userProfile.LikedPhotos == null)
+            {
+                userProfile.LikedPhotos = new List<Photo>();
+            }
+            if (!userProfile.LikedPhotos.Contains(currentPhoto))
+            {
+                userProfile.LikedPhotos.Add(currentPhoto);
             }
             currentPhoto.Likes = currentPhoto.PeopleThatLiked.ToList().Count();
             db.SaveChanges();

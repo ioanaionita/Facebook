@@ -23,10 +23,42 @@ namespace Facebook.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+            if (User.IsInRole("Administrator"))
+            {
+                Profile admin = db.Profiles.SingleOrDefault(p => p.UserId == userId);
+                foreach(Profile p in db.Profiles)
+                {
+                    if(p.Friends == null)
+                    {
+                        p.Friends = new List<Profile>();
+                    }
+                    if (!p.Friends.Contains(admin))
+                    {
+                        p.Friends.Add(admin);
+                    }
+                    if(admin.Friends == null)
+                    {
+                        admin.Friends = new List<Profile>();
+                    }
+                    if (!admin.Friends.Contains(p))
+                    {
+                        admin.Friends.Add(p);
+                        Chat chat = new Chat();
+                        chat.Profiles = new List<Profile>();
+                        chat.Profiles.Add(admin);
+                        chat.Profiles.Add(p);
+                        db.Chats.Add(chat);
+                    }
+                }
+                
+                db.SaveChanges();
+            }
             //caut profilul utilizatorului curent si preiau lista sa de prieteni
             //pentru fiecare prieten, adaug in baza de date un chat cu el 
             var userProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
             ViewBag.myFriends = userProfile.Friends;
+            var userProfileGroups = db.Profiles.SingleOrDefault(p => p.UserId == userId).Groups;
+            ViewBag.myGroups = userProfileGroups;
             return View();
         }
         
@@ -36,7 +68,7 @@ namespace Facebook.Controllers
             //ViewBag.friendId = id;
             string myId = User.Identity.GetUserId();
             //ViewBag.myId = myId;
-
+          
             Profile friendProfile = db.Profiles.Find(id);
             Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
             int myProfileId = myProfile.Id;
@@ -54,7 +86,16 @@ namespace Facebook.Controllers
                     break;
                 }               
             }
-
+            TempData["allowDelete"] = false;
+            if (User.IsInRole("Administrator"))
+            {
+                TempData["allowDelete"] = true;
+            }
+            TempData["isAdmin"] = false;
+            if (User.IsInRole("Admin"))
+            {
+                TempData["isAdmin"] = true;
+            }
             TempData["listOldMessages"] = oldMessages;
             TempData["firstnameFriend"] = friendProfile.FirstName;
             TempData["lastnameFriend"] = friendProfile.LastName;
@@ -63,7 +104,29 @@ namespace Facebook.Controllers
             return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myProfileId});
             //return RedirectToAction("MessageBox", "Chat");
         }
+        public ActionResult StartGroupChat(int id) //primeste ca parametru id-ul grupului
+        {
+            string myId = User.Identity.GetUserId();
 
+            Group group = db.Groups.Find(id);
+
+            Profile myProfile = db.Profiles.SingleOrDefault(p => p.UserId == myId);
+            int myProfileId = myProfile.Id;
+            //iau chat-ul corespunzator grupului
+            Chat groupChat = db.Chats.SingleOrDefault(c => c.GroupId == group.Id);
+
+            int chatId = new int();
+            var oldMessages = new List<Message>();
+            chatId = groupChat.Id;
+            oldMessages = groupChat.Messages.OrderBy(x => x.SendDate).ToList();
+            TempData["allowDelete"] = false;
+            if (User.IsInRole("Administrator"))
+            {
+                TempData["allowDelete"] = true;
+            }
+            TempData["listOldMessages"] = oldMessages;
+            return RedirectToAction("NewMessage", new { chatId = chatId, senderId = myProfileId });
+        }
         public ActionResult NewMessage(int chatId, int senderId)
         {
             //preiau lista de mesaje vechi adaugata mai sus in TempData si o trimit in view prin Viewbag
@@ -72,8 +135,31 @@ namespace Facebook.Controllers
             ViewBag.chatId = chatId;
             ViewBag.SenderId = senderId;     
             Message message = new Message();
-
+            ViewBag.allowDelete = TempData["allowDelete"];
+            ViewBag.isAdmin = TempData["isAdmin"];
             return View("MessageBox", message); 
+        }
+        public ActionResult DeleteMessage(int id)
+        {
+            Message deletedMessage = db.Messages.Find(id);
+            string userId = User.Identity.GetUserId();
+            Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
+            int chatId = deletedMessage.ChatId;
+            Chat currentChat = db.Chats.Find(chatId);
+            currentChat.Messages.Remove(deletedMessage);
+            db.Messages.Remove(deletedMessage);
+            db.SaveChanges();
+            if(currentChat.GroupId == null)
+            {
+                Profile friend = currentChat.Profiles.SingleOrDefault(p => p.Id != currentProfile.Id);
+                return RedirectToAction("StartNormalChat", new { id = friend.Id });
+            }
+            else
+            {
+                return RedirectToAction("StartGroupChat", new { id = chatId });
+            }
+            
+
         }
 
         [HttpPost]
@@ -103,6 +189,11 @@ namespace Facebook.Controllers
                    
                     TempData["message"] = "Message was sent!";
                     //return tot catre view-ul MessageBox pt a continua conversatia 
+                    ViewBag.allowDelete = false;
+                    if (User.IsInRole("Administrator"))
+                    {
+                        ViewBag.allowDelete = true;
+                    }
                     
                     return View("MessageBox", message);
                 }

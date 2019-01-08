@@ -4,18 +4,24 @@
 }
 
 <h2>@ViewBag.Title</h2>
-@foreach( FacebookDAW.Models.Album a in ViewBag.albums)
+@if (TempData.ContainsKey("newAlbum"))
 {
-<div class="panel panel-default">
-    <div class="panel-heading"><strong> @a.Name </strong> </div>
-    <div class="panel-body">
-        <a class="btn btn-sm btn-success" href="/Album/Show/@a.Id">View album</a>
-
-    </div>
-    @if (ViewBag.Delete)
-    {
-        <a class="btn btn-sm btn-success" href="/Album/DeleteAlbum/@a.Id">Delete album</a>
-    }
-</div>
+    <h3 class="alert alert-info" role="alert">@TempData["newAlbum"]</h3>
+    <br />
 }
+@foreach (FacebookDAW.Models.Album a in ViewBag.albums)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong> @a.Name </strong> </div>
+        <div class="panel-body">
+            <a class="btn btn-sm btn-success " href="/Album/Show/@a.Id">View album</a>
+            @if (ViewBag.Delete)
+            {
+                <a class="btn btn-sm btn-danger" href="/Album/DeleteAlbum/@a.Id">Delete album</a>
+            }
+        </div>
+        
+    </div>
+}
+
 

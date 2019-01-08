@@ -52,12 +52,24 @@ namespace Facebook.Controllers
         public ActionResult Show(int id)
         {
             Profile profile = db.Profiles.Find(id);
+            
             ViewBag.Private = profile.ProfileVisibility;
+            if(profile.UserId == User.Identity.GetUserId())
+            {
+                ViewBag.Private = false;
+            }
             ViewBag.Profile = profile;
             ViewBag.DateOfBirth = profile.DateOfBirth.Date.ToString("dd.MM.yyyy");
             ViewBag.allowEdit = false;
             ViewBag.currentUser = User.Identity.GetUserId();
             ViewBag.currentProfile = profile.Id;
+            ViewBag.guestUser = false;
+            if(User.Identity.GetUserId() == null)
+            {
+                ViewBag.guestUser = true;
+                return View(profile);
+
+            }
             if (profile.UserId == User.Identity.GetUserId() && (User.IsInRole("Administrator") || User.IsInRole("Editor")))
             {
                 ViewBag.allowEdit = true;

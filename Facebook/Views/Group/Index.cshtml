@@ -14,7 +14,7 @@
     {
         <div class="card">
             <div class="card-body">
-                @g.Name  <small>created at: @g.CreatedDate</small>
+                <strong>@g.Name</strong>  <small>created at: @g.CreatedDate</small>
                 <a class="btn btn-sm btn-success" href="/Group/JoinGroup/@g.Id">Join Group</a>
             </div>
         </div>
@@ -24,3 +24,4 @@ else
 {
     <p class="font-italic">There are no groups yet.</p>
 }
+<a class="btn btn-sm btn-success" href="/Group/New/">Add new group</a>

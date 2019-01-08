@@ -5,7 +5,10 @@
 
 <h2>@ViewBag.Title</h2>
 <p>@ViewBag.innerMessage</p>
-
+@if (ViewBag.myFriends != null)
+{
+    <h3>Friend chats</h3>
+}
 <div class="container">
     <ul class="list-group">
         @foreach (FacebookDAW.Models.Profile profile in ViewBag.myFriends)
@@ -16,8 +19,24 @@
                 <a href="/Chat/StartNormalChat/@profile.Id">
                     <strong>@profile.FirstName @profile.LastName</strong>
                 </a>
-                <span class="badge badge-primary badge-pill">14</span> <!--pt nr de mesaje necitite-->
+                <!--<span class="badge badge-primary badge-pill">14</span> pt nr de mesaje necitite-->
             </li>
         }
     </ul>
+</div>
+@if (ViewBag.myGroups != null)
+{
+    <h3>Group chats</h3>
+}
+<div class="container">
+    <ul class="list-group">
+        @foreach (FacebookDAW.Models.Group group in ViewBag.myGroups)
+        {
+         <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/Chat/StartGroupChat/@group.Id">
+                <strong>@group.Name</strong>
+            </a>
+            </li>
+         }
+        </ul>
 </div>

@@ -14,21 +14,34 @@ namespace Facebook.Controllers
         private ApplicationDbContext db = ApplicationDbContext.Create();
         // GET: Group
         public ActionResult Index()
+
         {
-            List<Group> groups = new List<Group>();
-            string userId = User.Identity.GetUserId();
-            Profile profilCurrent = db.Profiles.SingleOrDefault(p => p.UserId == userId);
-            foreach ( Group g in db.Groups)
+            if(User.Identity.GetUserId() == null)
             {
-                if (!g.Profiles.Contains(profilCurrent))
-                {
-                    groups.Add(g);
-                }
+                return RedirectToAction("Login", "Account");
             }
-            ViewBag.Groups = groups;
-            if (TempData.ContainsKey("grup"))
+            ViewBag.noGroups = false;
+            if (db.Groups == null)
             {
-                ViewBag.grup = TempData["grup"].ToString();
+                ViewBag.noGroups = true;
+            }
+            else
+            {
+                List<Group> groups = new List<Group>();
+                string userId = User.Identity.GetUserId();
+                Profile profilCurrent = db.Profiles.SingleOrDefault(p => p.UserId == userId);
+                foreach (Group g in db.Groups)
+                {
+                    if (!profilCurrent.Groups.Contains(g))
+                    {
+                        groups.Add(g);
+                    }
+                }
+                ViewBag.Groups = groups;
+                if (TempData.ContainsKey("grup"))
+                {
+                    ViewBag.grup = TempData["grup"].ToString();
+                }
             }
             return View();
         }
@@ -41,7 +54,6 @@ namespace Facebook.Controllers
                 return RedirectToAction("Login", "Account");
             }
             Group group = new Group();
-            
             //var myFriends = creatorProfile.Friends.Select(c => new {
 
              //               Id = c.Id,
@@ -67,6 +79,11 @@ namespace Facebook.Controllers
                     group.CreatedDate = DateTime.Now;
                     creatorProfile.Groups.Add(group);
                     db.Groups.Add(group);
+                    Chat chat = new Chat();
+                    chat.GroupId = group.Id;
+                    chat.Profiles = new List<Profile>();
+                    chat.Profiles.Add(creatorProfile);
+                    db.Chats.Add(chat);
                     db.SaveChanges();
                     TempData["grup"] = "Grupul a fost creat!";
                     return RedirectToAction("Index", "Group");
@@ -88,6 +105,8 @@ namespace Facebook.Controllers
             Group currentGroup = db.Groups.Find(id);
             currentGroup.Profiles.Add(profilCurent);
             profilCurent.Groups.Add(currentGroup);
+            Chat groupChat = db.Chats.SingleOrDefault(c => c.GroupId == currentGroup.Id);
+            groupChat.Profiles.Add(profilCurent);
             db.SaveChanges();
             return RedirectToAction("Index", "Group");
         }

@@ -29,5 +29,6 @@ namespace FacebookDAW.Models
         //se retine profilul persoanei careia i-am trimis cerere de prietenie
         public virtual ICollection<Profile> SentFriendRequests { get; set; }
         public virtual ICollection<Chat> Chats { get; set; }
+        public virtual ICollection<Photo> LikedPhotos { get; set; }
     }
 }
