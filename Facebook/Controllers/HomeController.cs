@@ -20,11 +20,14 @@ namespace Facebook.Controllers
                 ViewBag.loggedUser = true;
                 string userId = User.Identity.GetUserId();
                 Profile currentProfile = db.Profiles.SingleOrDefault(p => p.UserId == userId);
-                Notification notifications = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
-                ViewBag.notifications = notifications;
-                if (notifications != null)
+                if (currentProfile != null)
                 {
-                    ViewBag.notificationsCount = notifications.FriendRequests.Count();
+                    Notification notifications = db.Notifications.SingleOrDefault(n => n.ReceiverId == currentProfile.Id);
+                    ViewBag.notifications = notifications;
+                    if (notifications != null)
+                    {
+                        ViewBag.notificationsCount = notifications.FriendRequests.Count();
+                    }
                 }
                 //prin albumele profilului vreau sa iau pozele care sunt pending deja
                 List<Album> albums = new List<Album>();

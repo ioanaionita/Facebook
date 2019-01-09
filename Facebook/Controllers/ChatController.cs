@@ -88,6 +88,7 @@ namespace Facebook.Controllers
                     break;
                 }               
             }
+            TempData["groupAllowDelete"] = false;
             TempData["allowDelete"] = false;
             if (User.IsInRole("Administrator"))
             {
@@ -124,6 +125,15 @@ namespace Facebook.Controllers
             chatId = groupChat.Id;
             oldMessages = groupChat.Messages.OrderBy(x => x.SendDate).ToList();
             TempData["allowDelete"] = false;
+            if(groupChat.Profiles.Count > 2)
+            {
+                TempData["groupAllowDelete"] = true;
+            }
+            else
+            {
+                TempData["groupAllowDelete"] = false;
+            }
+           
             if (User.IsInRole("Administrator"))
             {
                 TempData["allowDelete"] = true;
@@ -137,8 +147,9 @@ namespace Facebook.Controllers
             var oldMessages = TempData["listOldMessages"] as List<Message>;
             ViewBag.oldMessages = oldMessages;
             ViewBag.chatId = chatId;
-            ViewBag.SenderId = senderId;     
+            ViewBag.SenderId = senderId;   
             Message message = new Message();
+            ViewBag.groupAllowDelete = TempData["groupAllowDelete"];
             ViewBag.allowDelete = TempData["allowDelete"];
             ViewBag.isAdmin = TempData["isAdmin"];
             ViewBag.myId = senderId;
@@ -232,7 +243,14 @@ namespace Facebook.Controllers
                     {
                         ViewBag.allowDelete = true;
                     }
-                    
+                    if(chat.Profiles.Count() > 2)
+                    {
+                        ViewBag.groupAllowDelete = true;
+                    }
+                    else
+                    {
+                        ViewBag.groupAllowDelete = false;
+                    }
                     return View("MessageBox", message);
                 }
                 else
