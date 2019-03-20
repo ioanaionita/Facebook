@@ -8,7 +8,7 @@
 }
 
 <!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
-@if (ViewBag.oldMessages.Count != 0)
+@if (ViewBag.oldMessages!=null && ViewBag.oldMessages.Count != 0)
 {
     <div id="oldMessages" style="height:300px; overflow-y: scroll;">
         <ul class="list-group">
