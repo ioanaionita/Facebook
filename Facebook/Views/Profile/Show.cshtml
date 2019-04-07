@@ -1,83 +1,108 @@
 ﻿@model FacebookDAW.Models.Profile
 @{
-                /**/
+    /**/
 
-                ViewBag.Title = "My profile";
-                int profileId = (int)ViewBag.Profile.Id;
+    ViewBag.Title = "My profile";
+    int profileId = (int)ViewBag.Profile.Id;
 }
 
 <br />
-@if (ViewBag.guestUser)
-{
-    <h2>@Model.FirstName @Model.LastName</h2>
-    if (ViewBag.Private)
-    {
-        <p class="font-italic"> Acest profil este privat.</p>
-    }
-    else
-    {
-        <p>Date of birth: @Model.DateOfBirth</p>
-        <p>From @Model.City, @Model.Country</p>
-        <a href="/Album/Index/@Model.Id">See the albums</a>
-        <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
-        <hr />
-    }
+<!-- Akame About Area Start -->
+<section class="akame--about--area">
+    <div class="container">
+        <div class="row">
+            <!-- Section Heading -->
+            <div class="col-12 col-lg-6">
+                <div class="section-heading text-right mb-80 pr-5 pt-3">
+                    <p>From @Model.City, @Model.Country</p>
+                    <h2>@Model.FirstName @Model.LastName</h2>
+                    <span>My profile</span>
 
-}
-else
-{
-    if (TempData.ContainsKey("update"))
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="about--us--content mb-80">
+                    @if (ViewBag.Private)
+                    {
+                        <p class="font-italic"> Acest profil este privat.</p>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-sm-4 font-italic">
+                                Date of birth:
+                            </div>
+                            <div class="col-sm-8 font-italic">
+                                @Model.DateOfBirth
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-4 font-italic">
+                                <a class="btn akame-btn" href="/Album/Index/@Model.Id">Albums</a>
+                            </div>
+                            <div class="col-sm-8 font-italic">
+                                <a class="btn akame-btn" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Akame About Area End -->
+    @if (ViewBag.guestUser == false)
     {
-        <h3 class="alert alert-info" role="alert">@ViewBag.update</h3>
-    }
-    if (@Model.UserId != ViewBag.currentUser)
-    {
-
-        if (ViewBag.alreadyFriends)
+        if (TempData.ContainsKey("update"))
         {
-            <button type="submit" class="btn btn-sm btn-success" disabled>Friends</button>
+            <h3 class="alert alert-info" role="alert">@ViewBag.update</h3>
         }
-        if (ViewBag.friendRequestSent == true && ViewBag.alreadyFriends == false)
+        if (@Model.UserId != ViewBag.currentUser)
         {
-        <button type="submit" class="btn btn-sm btn-success" disabled>Friend request sent</button>
+
+            if (ViewBag.alreadyFriends)
+            {
+                <button type="submit" class="btn akame-btn" disabled>Friends</button>
+            }
+            if (ViewBag.friendRequestSent == true && ViewBag.alreadyFriends == false)
+            {
+                <button type="submit" class="btn akame-btn" disabled>Friend request sent</button>
+            }
+            if (ViewBag.acceptFriendRequest == true && ViewBag.alreadyFriends == false)
+            {
+                <form method="post" action="/Profile/AcceptFriendRequest/@Model.Id">
+                    <button type="submit" class="btn akame-btn"> Accept friend request</button>
+
+                </form>
+            }
+            if (ViewBag.alreadyFriends == false && ViewBag.friendRequestSent == false && ViewBag.acceptFriendRequest == false)
+            {
+                <form method="post" action="/Profile/AddFriend/@Model.Id">
+                    <button type="submit" class="btn akame-btn" style="background-color:limegreen;"> Add friend</button>
+                </form>
+            }
         }
-        if (ViewBag.acceptFriendRequest == true && ViewBag.alreadyFriends == false)
+        if (ViewBag.Private && !ViewBag.alreadyFriends)
         {
-            <form method="post" action="/Profile/AcceptFriendRequest/@Model.Id">
-                <button type="submit" class="btn btn-sm btn-success"> Accept friend request</button>
-
-            </form>
+            <p class="font-italic">Acest profil este privat.</p>
         }
-        if (ViewBag.alreadyFriends == false && ViewBag.friendRequestSent == false && ViewBag.acceptFriendRequest == false)
+        else
         {
-            <form method="post" action="/Profile/AddFriend/@Model.Id">
-                <button type="submit" class="btn btn-sm btn-success"> Add friend</button>
-            </form>
+            <a class="btn akame-btn active mt-30" href="/Album/Index/@Model.Id">See the albums</a>
+            <a class="btn akame-btn active mt-30" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
+        }
+
+        if (ViewBag.allowEdit)
+        {
+            <a class="btn akame-btn active mt-30" href="/Profile/Edit/@Model.Id"> Update profile </a>
+        }
+
+        if (@Model.UserId == ViewBag.currentUser)
+        {
+            <a class="btn akame-btn active mt-30" href="/Album/New/@Model.UserId">Add new album</a>
+            <br />
         }
     }
-    <h2>@Model.FirstName @Model.LastName</h2>
-    if (ViewBag.Private && !ViewBag.alreadyFriends)
-    {
-        <p class="font-italic">Acest profil este privat.</p>
-    }
-    else
-    {
-        <p>Date of birth: @Model.DateOfBirth</p>
-        <p>From @Model.City, @Model.Country</p>
-        <a href="/Album/Index/@Model.Id">See the albums</a>
-        <a class="btn btn-sm btn-success" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
-        <hr />
-    }
-
-    if (ViewBag.allowEdit)
-    {
-        <a href="/Profile/Edit/@Model.Id"> Update profile </a>
-    }
-
-    if (@Model.UserId == ViewBag.currentUser)
-    {
-        <a href="/Album/New/@Model.UserId">Add new album</a>
-        <br />
-    }
-}
 

@@ -9,57 +9,82 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <!-- /Preloader -->
+    <!-- Header Area Start -->
+    <header class="header-area">
+        <!-- Top Header Area Start -->
+        <div class="top-header-area">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-5">
+                        <div class="top-header-content">
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="top-header-content text-right">
+                            <p><i class="fa fa-clock-o" aria-hidden="true"></i> Mon-Sat: 8.00 to 17.00 <span class="mx-2"></span> | <span class="mx-2"></span> <i class="fa fa-phone" aria-hidden="true"></i> Call us: (+12)-345-6789</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Top Header Area End -->
+        <!-- Main Header Start -->
+        <div class="main-header-area">
+            <div class="classy-nav-container breakpoint-off">
+                <div class="container">
+                    <!-- Classy Menu -->
+                    <nav class="classy-navbar justify-content-between" id="akameNav">
 
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="nav  navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Home/Index">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/About">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/Contact">Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Profile/Index">Search for friends</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="/Chat/Index">
-                        <img src="~/Images/messenger.png" alt="Chat" />
-                    </a>
-                </li>
-            </ul>
-            @Html.Partial("_LoginPartial")
-         
-        </div>
-    </nav>
-    
-    <!--<div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+                        <!-- Logo -->
+                        <a class="nav-brand" href="index.html"><img src="./img/core-img/logo.png" alt=""></a>
+
+                        <!-- Navbar Toggler -->
+                        <div class="classy-navbar-toggler">
+                            <span class="navbarToggler"><span></span><span></span><span></span></span>
+                        </div>
+
+                        <!-- Menu -->
+                        <div class="classy-menu">
+                            <!-- Menu Close Button -->
+                            <div class="classycloseIcon">
+                                <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                            </div>
+                            <!-- Nav Start -->
+                            <div class="classynav">
+                                <ul id="nav">
+                                    <li class="active"><a href="/Home/Index">Home</a></li>
+                                    <li>
+                                        <a href="#">Pages</a>
+                                        <ul class="dropdown">
+                                            <li><a class="nav-link" href="/Home/Index">Home <span class="sr-only">(current)</span></a></li>
+                                            <li><a class="nav-link" href="/Home/About">About</a></li>
+                                            <li><a class="nav-link" href="/Home/Contact">Contact</a></li>
+                                            <li><a class="nav-link" href="/Profile/Index">Search for friends</a></li>
+                                            <li>
+                                                <a class="nav-link" href="/Chat/Index">
+                                                    <img src="~/Images/messenger.png" alt="Chat" />
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                                @Html.Partial("_LoginPartial")
+                            </div>
+                            <!-- Nav End -->
+                        </div>
+                    </nav>
+                </div>
             </div>
         </div>
-    </div>-->
+    </header>
+    <!-- Header Area End -->
 
     <div class="container body-content">
         @RenderBody()
@@ -70,7 +95,42 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Theme/js/akame.bundle.js")
+    @Scripts.Render("~/Theme/js/bootstrap.min.js")
+    @Scripts.Render("~/Theme/js/imagesloaded.pkgd.min.js")
+    @Scripts.Render("~/Theme/js/isotope.pkgd.min.js")
+    @Scripts.Render("~/Theme/js/jarallax-video.min.js")
+    @Scripts.Render("~/Theme/js/jarallax.min.js")
+    @Scripts.Render("~/Theme/js/jquery.countdown.min.js")
+    @Scripts.Render("~/Theme/js/jquery.counterup.min.js")
+    @Scripts.Render("~/Theme/js/jquery.easing.min.js")
+    @Scripts.Render("~/Theme/js/jquery.magnific-popup.min.js")
+    @Scripts.Render("~/Theme/js/jquery.min.js")
+    @Scripts.Render("~/Theme/js/owl.carousel.min.js")
+    @Scripts.Render("~/Theme/js/popper.min.js")
+    @Scripts.Render("~/Theme/js/waypoints.min.js")
+    @Scripts.Render("~/Theme/js/default-assets/active.js")
+    @Scripts.Render("~/Theme/js/wow.min.js")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/magnific-popup.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/owl.carousel.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/css/style.css">
+    <link rel="stylesheet" type="text/css" href="~/Theme/style.css">
+    <!-- All JS Files -->
+    <!-- jQuery -->
+    <script src="~/Theme/js/jquery.min.js"></script>
+    <!-- Popper -->
+    <script src="~/Theme/js/popper.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/Theme/js/bootstrap.min.js"></script>
+    <!-- All Plugins -->
+    <script src="~/Theme/js/akame.bundle.js"></script>
+    <!-- Active -->
+    <script src="~/Theme/js/default-assets/active.js"></script>
+
 </body>
 </html>
