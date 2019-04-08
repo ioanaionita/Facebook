@@ -1,14 +1,81 @@
 ﻿
 @{
-    ViewBag.Title = "Albums";
+    ViewBag.Title = "albums";
 }
 
-<h2>@ViewBag.Title</h2>
 @if (TempData.ContainsKey("newAlbum"))
 {
     <h3 class="alert alert-info" role="alert">@TempData["newAlbum"]</h3>
     <br />
 }
+<!-- Breadcrumb Area Start -->
+<section style="width:100%;" class="breadcrumb-area section-padding-80 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-content">
+                    <h2>@ViewBag.FirstName @ViewBag.LastName's  @ViewBag.Title</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="~/Home/Index"><i class="icon_house_alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Albums</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Area End -->
+<!-- Portfolio Area Start -->
+<section class="akame-portfolio section-padding-0-80 clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="portfolio-menu text-center mb-50">
+
+                    @foreach (FacebookDAW.Models.Album a in ViewBag.albums)
+                    {
+                        <button class="btn" data-filter="*">@a.Name</button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row akame-portfolio-area">
+            @foreach(FacebookDAW.Models.Album a in ViewBag.albums)
+            {
+                <div class="col-12 col-sm-6 col-lg-4 akame-portfolio-item @a.Name mb-30 wow fadeInUp" data-wow-delay="200ms">
+                    <div class="akame-portfolio-single-item">
+                        @foreach (FacebookDAW.Models.Photo p in ViewBag.Pictures)
+                        {
+                            if (p.AlbumId == a.Id)
+                            {
+                                <img src="@Url.Content(p.Description)" alt="" />
+                                <!-- Thumbnail Zoom -->
+                                <a href="@Url.Content(p.Description)" class="thumbnail-zoom"><i class="icon_search"></i></a>
+                            }
+                        }
+                        <!-- Overlay Content -->
+                        <div class="overlay-content d-flex align-items-center justify-content-center">
+                            <div class="overlay-text text-center">
+                                <h4>@a.Name</h4>
+                            </div>
+                        </div>
+                        <a class="btn btn-sm btn-success " href="/Album/Show/@a.Id">View album</a>
+                        @if (ViewBag.Delete)
+                        {
+                            <a class="btn btn-sm btn-danger" href="/Album/DeleteAlbum/@a.Id">Delete album</a>
+                        }
+                    </div>
+                </div>
+            }
+
+    </div>
+</section>
+<!-- Portfolio Area End -->
+
+
 @foreach (FacebookDAW.Models.Album a in ViewBag.albums)
 {
     <div class="panel panel-default">
@@ -20,7 +87,7 @@
                 <a class="btn btn-sm btn-danger" href="/Album/DeleteAlbum/@a.Id">Delete album</a>
             }
         </div>
-        
+
     </div>
 }
 

@@ -23,12 +23,16 @@ namespace Facebook.Controllers
             string userId = db.Profiles.SingleOrDefault(p => p.Id == id).UserId;
             var albums = db.Albums.Where(a => a.UserId == userId);
             ViewBag.albums = albums;
+            Profile profile = db.Profiles.Find(id);
+            ViewBag.FirstName = profile.FirstName;
+            ViewBag.LastName = profile.LastName;
             string currentUser = User.Identity.GetUserId();
             ViewBag.Delete = false;
             if(User.IsInRole("Administrator") || currentUser == userId)
             {
                 ViewBag.Delete = true;
             }
+            ViewBag.Pictures = db.Photos.ToList();
             return View();
         }
         public ActionResult New(string userId)
