@@ -2,57 +2,50 @@
 @{
     ViewBag.Title = "MessageBox";
 }
-@if (TempData["firstnameFriend"] != null && TempData["lastnameFriend"] != null)
+
+@if (ViewBag.firstnameFriend != null && ViewBag.lastnameFriend != null)
 {
-<h3>@TempData["firstnameFriend"] @TempData["lastnameFriend"]</h3>
+<h3>@ViewBag.firstnameFriend @ViewBag.lastnameFriend</h3>
 }
-
-<!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
-@if (ViewBag.oldMessages!=null && ViewBag.oldMessages.Count != 0)
-{
-    <div id="oldMessages" style="height:300px; overflow-y: scroll;">
-        <ul class="list-group">
-            @foreach (var message in ViewBag.oldMessages)
-            {
-            <li class="list-group-item">
-                <strong>@message.Sender.FirstName : </strong> @message.Content
-               
-
-                @if (message.SenderId == ViewBag.myId || ViewBag.allowDelete)
+<div class="bg-light">
+    <!-- daca exista obiectul Chat cu cele doua persoane in baza de date, afisam in conversatie mesajele vechi -->
+    @if (ViewBag.oldMessages != null && ViewBag.oldMessages.Count != 0)
+    {
+        <div id="oldMessages" style="height:300px; overflow-y: scroll;">
+            <ul class="list-group">
+                @foreach (var message in ViewBag.oldMessages)
                 {
-                    if (message.SenderId == ViewBag.myId && ViewBag.groupAllowDelete)
-                    {
-                    <a class="btn btn-sm btn-danger" href="/Chat/DeleteMessage/@message.Id">Delete message</a>
-                    }
-                    <a class="btn btn-sm btn-success" href="/Chat/EditMessage/@message.Id">Edit message</a>
+                    <li class="list-group-item">
+                        <strong>@message.Sender.FirstName : </strong> @message.Content
+
+
+                        @if (message.SenderId == ViewBag.myId || ViewBag.allowDelete)
+                        {
+                            if (message.SenderId == ViewBag.myId && ViewBag.groupAllowDelete)
+                            {
+                                <a class="btn btn-sm btn-danger" href="/Chat/DeleteMessage/@message.Id">Delete message</a>
+                            }
+                            <a class="btn btn-sm btn-success" href="/Chat/EditMessage/@message.Id">Edit message</a>
+                        }
+
+                    </li>
                 }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <p class="font-italic">No older messages</p>
+    }
+    <!--trimiterea unui nou mesaj-->
+    <form method="post" action="/Chat/NewMessage/">
 
-            </li>
-            }
-        </ul>
-    </div>
-}
-else
-{
-    <p class="font-italic">No older messages</p>
-}
-<!--trimiterea unui nou mesaj-->
-<form method="post" action="/Chat/NewMessage/">
+        @Html.HiddenFor(m => m.SenderId, new { value = ViewBag.SenderId })
+        @Html.HiddenFor(m => m.ChatId, new { value = ViewBag.chatId })
+        Type a message:
+        @Html.TextBoxFor(m => m.Content, null, new { @class = "form-control", required = "required" })
+        @Html.HiddenFor(m => m.SendDate)
 
-    @Html.HiddenFor(m => m.SenderId, new { value = ViewBag.SenderId })
-    @Html.HiddenFor(m => m.ChatId, new { value = ViewBag.chatId })
-    Type a message:
-    @Html.TextBoxFor(m => m.Content, null, new { @class = "form-control", required = "required" })
-    @Html.HiddenFor(m => m.SendDate)
-
-    <button class="btn btn-sm btn-success" onClick="getSendDate()" type="submit">Send message</button>
-</form>
-
-<!--
-    <script>
-        function getSendDate() {
-            textbox = document.getElementById("SendDateTextbox");
-            textbox.value = DateTime.Now;
-        }
-    </script>
--->
+        <button class="btn btn-sm btn-success" onClick="getSendDate()" type="submit">Send message</button>
+    </form>
+</div>

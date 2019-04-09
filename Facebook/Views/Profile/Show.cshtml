@@ -64,23 +64,23 @@
 
             if (ViewBag.alreadyFriends)
             {
-                <button type="submit" class="btn akame-btn" disabled>Friends</button>
+                <button type="submit" class="btn" style="background-color:#BEA756;color:white;" disabled>Friends</button>
             }
             if (ViewBag.friendRequestSent == true && ViewBag.alreadyFriends == false)
             {
-                <button type="submit" class="btn akame-btn" disabled>Friend request sent</button>
+                <button type="submit" class="btn" style="background-color:#BEA756;color:white;" disabled>Friend request sent</button>
             }
             if (ViewBag.acceptFriendRequest == true && ViewBag.alreadyFriends == false)
             {
                 <form method="post" action="/Profile/AcceptFriendRequest/@Model.Id">
-                    <button type="submit" class="btn akame-btn"> Accept friend request</button>
+                    <button type="submit" class="btn" style="background-color:#BEA756;color:white;"> Accept friend request</button>
 
                 </form>
             }
             if (ViewBag.alreadyFriends == false && ViewBag.friendRequestSent == false && ViewBag.acceptFriendRequest == false)
             {
                 <form method="post" action="/Profile/AddFriend/@Model.Id">
-                    <button type="submit" class="btn akame-btn" style="background-color:limegreen;"> Add friend</button>
+                    <button type="submit" class="btn" style="background-color:#BEA756;color:white;"> Add friend</button>
                 </form>
             }
         }
@@ -99,10 +99,5 @@
             <a class="btn akame-btn active mt-30" href="/Profile/Edit/@Model.Id"> Update profile </a>
         }
 
-        if (@Model.UserId == ViewBag.currentUser)
-        {
-            <a class="btn akame-btn active mt-30" href="/Album/New/@Model.UserId">Add new album</a>
-            <br />
-        }
     }
 

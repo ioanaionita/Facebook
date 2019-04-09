@@ -60,7 +60,7 @@ namespace Facebook.Controllers
                     string userProfile = album.UserId;
                     int profileId = db.Profiles.SingleOrDefault(p => p.UserId == userProfile).Id;
                     db.SaveChanges();
-                    TempData["newAlbum"] = "Albumul a fost adaugat!";
+                    TempData["newAlbum"] = "The album has been added!";
                     return RedirectToAction("Index", new { id = profileId });
                 }
                 else

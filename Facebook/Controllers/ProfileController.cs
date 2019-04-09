@@ -199,7 +199,7 @@ namespace Facebook.Controllers
                 {
                     db.Profiles.Add(profile);
                     db.SaveChanges();
-                    TempData["message"] = "Profilul a fost adaugat!";
+                    TempData["message"] = "The profile has been added!";
                     return RedirectToAction("Index", "Profile");
                 }
                 else
@@ -241,7 +241,7 @@ namespace Facebook.Controllers
                         profile.Country = requestProfile.Country;
                         profile.ProfileVisibility = requestProfile.ProfileVisibility;
                         db.SaveChanges();
-                        TempData["update"] = "Profilul a fost modificat!";
+                        TempData["update"] = "The profile has been updated!";
                         
                     }
                     return RedirectToAction("Show", new { id = profile.Id });
