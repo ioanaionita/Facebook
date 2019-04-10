@@ -85,7 +85,7 @@ namespace Facebook.Controllers
                     chat.Profiles.Add(creatorProfile);
                     db.Chats.Add(chat);
                     db.SaveChanges();
-                    TempData["grup"] = "Grupul a fost creat!";
+                    TempData["grup"] = "The group has been added!";
                     return RedirectToAction("Index", "Group");
                 }
                 else

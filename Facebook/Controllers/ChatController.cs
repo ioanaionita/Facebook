@@ -101,6 +101,7 @@ namespace Facebook.Controllers
                 TempData["isAdmin"] = true;
             }
             TempData["listOldMessages"] = oldMessages;
+            ViewBag.firstnameFriend = friendProfile.FirstName;
             TempData["firstnameFriend"] = friendProfile.FirstName;
             TempData["lastnameFriend"] = friendProfile.LastName;
             //ViewBag.firstnameFriend = friendProfile.FirstName;
@@ -147,6 +148,13 @@ namespace Facebook.Controllers
             var oldMessages = TempData["listOldMessages"] as List<Message>;
             ViewBag.oldMessages = oldMessages;
             ViewBag.chatId = chatId;
+            Chat c = db.Chats.Find(chatId);
+            ViewBag.groupName = null;
+            if(c != null && c.GroupId != null)
+            {
+                Group g = db.Groups.Find(c.GroupId);
+                ViewBag.groupName = g.Name;
+            }
             ViewBag.SenderId = senderId;   
             Message message = new Message();
             ViewBag.groupAllowDelete = TempData["groupAllowDelete"];

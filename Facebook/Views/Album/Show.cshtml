@@ -38,20 +38,18 @@
     }
 }
 <hr />
-
 @foreach (FacebookDAW.Models.Photo p in ViewBag.photos)
 {
-    <div class="card">
+    <div class="card d-inline-block" style="width: 18rem;">
+        <img class="card-img-top" src="@Url.Content(p.Description)" alt="Card image cap">
         <div class="card-body">
-            <img src="@Url.Content(p.Description)" height="100px" weight="100px" alt="Sper sa nu apara mesajul asta" />
-            <br />
             @if (p.Likes == 1)
             {
-                <small>1 person appreciates this photo</small>
+                <small class="font-italic" style="color:grey;">1 person appreciates this photo</small>
             }
             else
             {
-                <small>@p.Likes people appreciate this photo</small>
+                <small class="font-italic" style="color:grey;">@p.Likes people appreciate this photo</small>
             }
             @if (!ViewBag.userProfile.LikedPhotos.Contains(p) && !p.PeopleThatLiked.Contains(ViewBag.userProfile) && ViewBag.userProfile != ViewBag.currentProfile)
             {
@@ -62,7 +60,6 @@
             {
                 <a class="btn btn-sm btn-danger" href="/Album/DeletePhoto/@p.Id">Delete photo</a>
             }
-            <br />
         </div>
     </div>
 }

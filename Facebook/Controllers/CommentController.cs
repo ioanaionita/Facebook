@@ -29,6 +29,7 @@ namespace Facebook.Controllers
             }
             ViewBag.comments = comments;
             Album currentAlbum = db.Albums.Find(currentPhoto.AlbumId);
+            ViewBag.albumId = currentAlbum.Id;
             ViewBag.albumName = currentAlbum.Name;
             ViewBag.allowDelete = false;
             if (User.IsInRole("Administrator"))

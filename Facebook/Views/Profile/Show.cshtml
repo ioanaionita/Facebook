@@ -38,14 +38,6 @@
                         </div>
                         <br />
                         <br />
-                        <div class="row">
-                            <div class="col-sm-4 font-italic">
-                                <a class="btn akame-btn" href="/Album/Index/@Model.Id">Albums</a>
-                            </div>
-                            <div class="col-sm-8 font-italic">
-                                <a class="btn akame-btn" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
-                            </div>
-                        </div>
                     }
                 </div>
             </div>
@@ -90,7 +82,6 @@
         }
         else
         {
-            <a class="btn akame-btn active mt-30" href="/Album/Index/@Model.Id">See the albums</a>
             <a class="btn akame-btn active mt-30" href="/Profile/FriendsAndGroups/@Model.Id"> View friends and groups</a>
         }
 
@@ -99,5 +90,16 @@
             <a class="btn akame-btn active mt-30" href="/Profile/Edit/@Model.Id"> Update profile </a>
         }
 
+    }
+<hr />
+<h2>@Model.FirstName @Model.LastName's albums</h2>
+@foreach(FacebookDAW.Models.Album a in ViewBag.albums)
+    {
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@a.Name</h5>
+            <a href="/Album/Show/@a.Id" class="btn akame-btn">See album</a>
+        </div>
+    </div>
     }
 

@@ -64,7 +64,9 @@ namespace Facebook.Controllers
             ViewBag.currentUser = User.Identity.GetUserId();
             ViewBag.currentProfile = profile.Id;
             ViewBag.guestUser = false;
-            if(User.Identity.GetUserId() == null)
+            var albums = db.Albums.Where(a => a.UserId == profile.UserId);
+            ViewBag.albums = albums;
+            if (User.Identity.GetUserId() == null)
             {
                 ViewBag.guestUser = true;
                 return View(profile);
