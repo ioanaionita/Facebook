@@ -14,6 +14,8 @@ namespace Facebook.Controllers
         private ApplicationDbContext db = ApplicationDbContext.Create();
         public ActionResult Index()
         {
+            Program program = new Program();
+            program.Main();
             ViewBag.loggedUser = false;
             if(User.Identity.GetUserId()!= null)
             {
