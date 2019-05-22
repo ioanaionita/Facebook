@@ -13,6 +13,10 @@ namespace FacebookDAW.Models
         public string Description { get; set; }
         public int Likes { get; set; }
         public int AlbumId { get; set; }
+        public int NrPositiveComments { get; set; }
+        public int NrNegativeComments { get; set; }
+        public int NrNeutralComments { get; set; }
+        public int PhotoImpact { get; set; }
         
         public virtual Album Album { get; set; }
         public virtual ICollection<Comment> Comments{ get; set; }

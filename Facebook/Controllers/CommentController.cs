@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using VaderSharp;
 
 namespace Facebook.Controllers
 {
@@ -41,6 +42,14 @@ namespace Facebook.Controllers
         [HttpPost]
         public ActionResult New(Comment comment, int id)
         {
+            SentimentIntensityAnalyzer analyzer = new SentimentIntensityAnalyzer();
+            var results = analyzer.PolarityScores(comment.Content);
+            if (results.Neutral > results.Positive && results.Neutral > results.Negative)
+                comment.CommentType = 0;
+            else if (results.Negative > results.Positive && results.Negative > results.Neutral)
+                comment.CommentType = -1;
+            else comment.CommentType = 1;
+
             comment.PhotoId = id;
             string currentUserId = User.Identity.GetUserId();
             Profile profile = db.Profiles.SingleOrDefault(p => p.UserId == currentUserId);
