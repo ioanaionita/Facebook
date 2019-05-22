@@ -42,13 +42,31 @@ namespace Facebook.Controllers
         [HttpPost]
         public ActionResult New(Comment comment, int id)
         {
+            var commentedPhoto = db.Photos.FirstOrDefault(p => p.Id == id);
+
             SentimentIntensityAnalyzer analyzer = new SentimentIntensityAnalyzer();
             var results = analyzer.PolarityScores(comment.Content);
             if (results.Neutral > results.Positive && results.Neutral > results.Negative)
+            {
                 comment.CommentType = 0;
+                commentedPhoto.NrNeutralComments++;
+            }
             else if (results.Negative > results.Positive && results.Negative > results.Neutral)
+            {
                 comment.CommentType = -1;
-            else comment.CommentType = 1;
+                commentedPhoto.NrNegativeComments++;
+            }
+            else
+            {
+                comment.CommentType = 1;
+                commentedPhoto.NrPositiveComments++;
+            }
+
+            if (commentedPhoto.NrPositiveComments > commentedPhoto.NrNeutralComments && commentedPhoto.NrPositiveComments > commentedPhoto.NrNegativeComments)
+                commentedPhoto.PhotoImpact = 1;
+            else if (commentedPhoto.NrNegativeComments > commentedPhoto.NrPositiveComments && commentedPhoto.NrNegativeComments > commentedPhoto.NrNeutralComments)
+                commentedPhoto.PhotoImpact = -1;
+            else commentedPhoto.PhotoImpact = 0;
 
             comment.PhotoId = id;
             string currentUserId = User.Identity.GetUserId();
